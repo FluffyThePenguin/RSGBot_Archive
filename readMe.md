@@ -2,9 +2,8 @@
 r/Singapore's community building bot.
 
 This ReadMe is very rough, will be adding quite a bit to it. Important sections like testing need to be added. It's got enough for you to start tinkering though.
-I've renamed the first issue in the repo to "Getting Started". Please post technical questions there for future contributors reference.
-
-Don't hesitate to be frank about issues. Better we spot problems and resolve them now than down the line.
+I've renamed the first issue in the repo to "Getting Started". Post technical questions there for future contributors reference.  
+Don't hesitate to be provide frank feedback. Better we spot problems and resolve them now than down the line.
 
 ## Contributing
 ### Getting Started
@@ -106,6 +105,18 @@ TODO for some reason even though I've set
 
 in `.vscode/launch.json`, it still steps into node internals. Set a breakpoint for after the internals and continue to skip over
 all that for now.
+
+#### VSC Codebase Navigation
+`f1` to go to definition. Good way to figure out what arguments snoowrap methods take. Snoowrap has some rough edges.
+
+#### Typescript/Snoowrap await Issue
+Awaiting some snoowrap methods causes typescript error 1062.
+
+Known issue:
+- https://github.com/not-an-aardvark/snoowrap/issues/221
+- https://github.com/DefinitelyTyped/DefinitelyTyped/issues/33139
+
+I've verified that the underlying code is safe. If you encounter 1062, add `//@ts-ignore` above the line.
 
 ### Contributing a Feature
 1. Add a new folder under src/features or copy the exampleFeature folder.
