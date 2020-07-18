@@ -56,7 +56,7 @@ Don't hesitate to be provide frank feedback. Better we spot problems and resolve
     [Application]: 1 new comments found
     ```
 9. At present, the only feature is ExampleFeature:
-    ```
+    ```typescript
     import ICommentFeature from "../../shared/ICommentFeature";
     import snoowrap from "snoowrap";
     import {injectable} from "tsyringe";
@@ -96,7 +96,7 @@ Set a breakpoint. In vsc's main menu, click run > start debugging or press f5.
 
 TODO for some reason even though I've set
 
-```
+```json
 "skipFiles": [
     // "node_modules/**/*.js", // Uncomment to prevent stepping into dependencies
     "<node_internals>/**/*.js" // TODO not working
@@ -121,7 +121,7 @@ I've verified that the underlying code is safe. If you encounter 1062, add `//@t
 ### Contributing a Feature
 1. Add a new folder under src/features or copy the exampleFeature folder.
 2. Once you're done implementing onComment and/or onSubmission, register your feature in `index.ts`
-   ```
+   ```typescript
    // Register a feature
    // - Register your feature for interfaces it implements. Note that ICommentFeature and ISubmissionFeature both implement IFeature.
    container.register('IFeature', ExampleFeature);
