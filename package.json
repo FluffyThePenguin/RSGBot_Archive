@@ -1,0 +1,27 @@
+{
+    "name": "rsgbot",
+    "version": "1.0.0",
+    "description": "r/Singapore Bot",
+    "main": "index.ts",
+    "repository": "https://github.com/RsgTechSupport/RSGBot",
+    "author": "RSG Tech Support",
+    "license": "MIT",
+    "private": false,
+    "scripts": {
+        "dev": "set RSGBOT_ENV=development && nodemon ./src/index.ts",
+        "build": "tsc ./src/index.ts"
+    },
+    "dependencies": {
+        "@types/node": "^14.0.23",
+        "@types/request": "^2.48.5",
+        "dotenv": "^8.2.0",
+        "reflect-metadata": "^0.1.13",
+        "snoowrap": "^1.21.0",
+        "tsyringe": "^4.3.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.4",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.7"
+    }
+}

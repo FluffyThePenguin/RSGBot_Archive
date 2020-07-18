@@ -1,0 +1,9 @@
+/**/node_modules/
+dist/
+
+
+.npmrc
+debug.log
+npm-debug.log
+yarn-error.log
+variables.env
