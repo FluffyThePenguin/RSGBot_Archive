@@ -112,7 +112,7 @@ TODO document testing, add example tests
     import ISubmissionFeature from "../../shared/ISubmissionFeature";
     import snoowrap from "snoowrap";
     import Command from "../../shared/Command";
-    import Logger from "../../shared/Logger";
+    import Logger from "../../shared/ILogger";
     import {injectable} from "tsyringe";
 
     @injectable()
@@ -136,9 +136,10 @@ TODO document testing, add example tests
       `onComment` and `onSubmission` fire when a comment or a submission is posted respectively. 
     - Certain features may be proactive rather than reactive, e.g. a feature that creates a meme competition thread once a week. Such features can implement just `IFeature` and set timeouts in the member it exposes, `onInit`.
     - `_snoowrap` is the Reddit API wrapper. [snoowrap repository](https://github.com/not-an-aardvark/snoowrap).
-2. Add a new folder under src/features or copy the `src/features/exampleFeature` folder.
-3. Implement onComment/onSubmission/onInit in your feature.
-4. Register your feature in `index.ts`, this is how `ExampleFeature` is registered:
+2. Create a new git branch: `git checkout -b add_<feature_name>`.
+3. Add a new folder under src/features or copy the `src/features/exampleFeature` folder.
+4. Implement onComment/onSubmission/onInit in your feature.
+5. Register your feature in `index.ts`, this is how `ExampleFeature` is registered:
    ```typescript
    // Register a feature
    // - Register your feature for interfaces it implements. Note that ICommentFeature and ISubmissionFeature both implement IFeature.
@@ -146,7 +147,7 @@ TODO document testing, add example tests
    container.register('ICommentFeature', ExampleFeature);
    container.register('ISubmissionFeature', ExampleFeature);
    ```
-5. [Create a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+6. [Create a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 ### Tips
 #### Debugging
