@@ -91,10 +91,10 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
     ```
     - `nodemon` restarts the application when you save changes.
     - The Reddit API terms chronologically ordered lists of "things" (comments/posts etc) ["listings"](https://www.reddit.com/dev/api/#listings). When we retrieve from a listing, we specify 
-      that we want only things posted after the last thing we processed, e.g. comments posted after the last comment we processed. Things are specified using ["fullnames"](https://www.reddit.com/dev/api/#fullnames), e.g. `t1_fyfqmt2`.
+      that we only want things posted after the last thing we processed, e.g. comments posted after the last comment we processed. Things are specified using ["fullnames"](https://www.reddit.com/dev/api/#fullnames), e.g. `t1_fyfqmt2`.
       Above you'll notice our use of fullnames to specify what we want to retrieve. Note that the Reddit API refers to "chronologically after" as before, i.e. if thing *a* was posted after (chronologically) thing *b*,
       thing *a* is before thing *b* in the listing. 
-8. Navigate to [r/RSGBot](https://www.reddit.com/r/RSGBot). This is our test subreddit. The bot is configured to poll it in development mode. Post a comment or submission to verify that your bot is polling it properly:
+8. Navigate to [r/RSGBot](https://www.reddit.com/r/RSGBot). This is our test subreddit. In development mode, the bot is configured to poll it. Post a comment or submission there to verify that your bot polls properly:
     ```
     [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htb1ai
     [Application]: No new comments
@@ -103,7 +103,7 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
     [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htex19
     [Application]: 1 new comments found
     ```
-    - `ExampleFeature` echos detected comments/submissions, as we'll see in the next step.
+    - `ExampleFeature` echos comments/submissions. You should see replies from your bot.
 
 ### Contributing a Feature
 Features are things like auto-flairing of posts, removal of duplicate posts,
@@ -138,9 +138,8 @@ TODO document testing, add example tests
         }
     }
     ```
-    - A feature taps into the stream of comments and submissions retrieve by polling and reacts to each appropriately.
-      `onComment` and `onSubmission` fire when a comment or a submission is posted respectively. 
-    - Certain features may be proactive rather than reactive, e.g. a feature that creates a meme competition thread once a week. Such features can implement just `IFeature` and set timeouts in the member it exposes, `onInit`.
+    - It implements `ICommentFeature.onComment` and `ISubmissionFeature.onSubmission` to react to new comments and submissions. 
+    - It does nothing in `IFeature.onInit`. Other features might use this method to register proactive events, e.g. logic to create a meme competition thread at the same time every week.
     - `_snoowrap` is the Reddit API wrapper. [snoowrap repository](https://github.com/not-an-aardvark/snoowrap).
 2. Create a new git branch: `git checkout -b add_<feature_name>`.
 3. Add a new folder under src/features or copy the `src/features/exampleFeature` folder.
@@ -157,7 +156,8 @@ TODO document testing, add example tests
 
 ### Tips
 #### Typescript Version
-This project includes TypeScript 3.9.7 as a dependency. Unfortunately, if you've already installed TypeScript on your machine, vsc uses that for type checking.
+This project includes TypeScript 3.9.7 as a dependency. If you've already installed TypeScript on your machine, vsc uses that for type checking.
+This might be an issue if your installed version is old.
 
 To use the included TypesScript version: 
 - Open a `.ts` file. At the bottom right hand corner of vsc, you should see "TypeScript x.x.x". 
