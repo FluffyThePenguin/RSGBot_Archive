@@ -156,6 +156,13 @@ TODO document testing, add example tests
 6. [Create a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 ### Tips
+#### Typescript Version
+This project includes TypeScript 3.9.7 as a dependency. Unfortunately, if you've already installed TypeScript on your machine, vsc uses that for type checking.
+
+To use the included TypesScript version: 
+- Open a `.ts` file. At the bottom right hand corner of vsc, you should see "TypeScript x.x.x". 
+- Click the version number > Select TypeScript Version > Use Workspace Version.
+
 #### Debugging
 Set a breakpoint, then, in vsc's main menu, click run > start debugging or press f5. 
 
