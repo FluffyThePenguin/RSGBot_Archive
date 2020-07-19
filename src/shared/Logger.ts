@@ -1,7 +1,6 @@
-import { singleton } from "tsyringe";
+import ILogger from "./ILogger";
 
-@singleton()
-export default class Logger {
+export default class Logger implements ILogger {
     public async log(featureName: string, message: string): Promise<void> {
         // TODO 
         // - Multiple features will run concurrently.

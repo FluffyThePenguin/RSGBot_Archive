@@ -1,11 +1,11 @@
 import snoowrap from "snoowrap";
-import { injectable, injectAll, singleton } from "tsyringe";
-import CommandParser from "./shared/CommandParser";
+import { inject, injectable, injectAll, singleton } from "tsyringe";
 import Configuration from "./shared/Configuration";
+import ICommandParser from "./shared/ICommandParser";
 import ICommentFeature from "./shared/ICommentFeature";
-import ISubmissionFeature from "./shared/ISubmissionFeature";
-import Logger from "./shared/Logger";
 import IFeature from "./shared/IFeature";
+import ILogger from "./shared/ILogger";
+import ISubmissionFeature from "./shared/ISubmissionFeature";
 
 // TODO
 // - poll messages
@@ -17,8 +17,8 @@ export default class Application {
     constructor(@injectAll('ICommentFeature') private readonly _commentFeatures: ICommentFeature[],
         @injectAll('ISubmissionFeature') private readonly _submissionFeatures: ISubmissionFeature[],
         @injectAll('IFeature') private readonly _features: IFeature[],
-        private readonly _commandParser: CommandParser,
-        private readonly _logger: Logger,
+        @inject('ICommandParser') private readonly _commandParser: ICommandParser,
+        @inject('ILogger') private readonly _logger: ILogger,
         private readonly _snoowrap: snoowrap,
         private readonly _configuration: Configuration) { }
 

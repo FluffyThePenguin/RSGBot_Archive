@@ -1,8 +1,7 @@
 import Command from "./Command";
-import { singleton } from "tsyringe";
+import ICommandParser from "./ICommandParser";
 
-@singleton()
-export default class CommandParser {
+export default class CommandParser implements ICommandParser {
     // Returns a Command if commentBody is a command, null otherwise
     tryParse(commentBody: string): Command {
         // TODO

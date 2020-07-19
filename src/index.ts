@@ -7,6 +7,8 @@ import Application from "./Application";
 import ExampleFeature from "./features/exampleFeature/ExampleFeature";
 import Configuration from "./shared/Configuration";
 import { Mode } from "./shared/Mode";
+import CommandParser from "./shared/CommandParser";
+import Logger from "./shared/Logger";
 
 // Get secrets
 const clientID = process.env.CLIENT_ID;
@@ -25,6 +27,8 @@ container.registerInstance(snoowrap, new snoowrap({
     clientSecret: clientSecret,
     refreshToken: refreshToken
 }));
+container.register('ICommandParser', CommandParser);
+container.register('ILogger', Logger);
 
 // Register a feature
 // - Register your feature for interfaces it implements. Note that ICommentFeature and ISubmissionFeature both implement IFeature.

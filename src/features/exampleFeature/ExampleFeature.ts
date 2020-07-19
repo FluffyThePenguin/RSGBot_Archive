@@ -1,13 +1,14 @@
-import ICommentFeature from "../../shared/ICommentFeature";
 import snoowrap from "snoowrap";
-import {injectable} from "tsyringe";
-import ISubmissionFeature from "../../shared/ISubmissionFeature";
+import { inject, injectable } from "tsyringe";
 import Command from "../../shared/Command";
-import Logger from "../../shared/Logger";
+import ICommentFeature from "../../shared/ICommentFeature";
+import ILogger from "../../shared/ILogger";
+import ISubmissionFeature from "../../shared/ISubmissionFeature";
 
 @injectable()
 export default class ExampleFeature implements ICommentFeature, ISubmissionFeature {
-    constructor(private readonly _logger: Logger, private readonly _snoowrap: snoowrap) { }
+    constructor(@inject('ILogger') private readonly _logger: ILogger,
+        private readonly _snoowrap: snoowrap) { }
 
     public async onComment(comment: snoowrap.Comment, command: Command): Promise<void> {
         this._logger.log('ExampleFeature', `onComment, comment body: ${comment.body}`);
