@@ -26,7 +26,12 @@ r/Singapore's community building bot.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Auto-Remove Duplicate Links with Different Query Parameters](#todo-auto-remove-duplicate-links-with-different-query-parameters)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Limit Submissions to 5 a day](#todo-limit-submissions-to-5-a-day)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Auto-Flairing](#todo-auto-flairing)  
-[Related Concepts](#related-concepts)  
+[Related](#related)  
+&nbsp;&nbsp;&nbsp;&nbsp;[Source Control](#source-control)  
+&nbsp;&nbsp;&nbsp;&nbsp;[Static Typing](#static-typing)  
+&nbsp;&nbsp;&nbsp;&nbsp;[Package Management](#package-management)  
+&nbsp;&nbsp;&nbsp;&nbsp;[Authorization and OAuth 2.0](#authorization-and-oauth-20)  
+&nbsp;&nbsp;&nbsp;&nbsp;[NoSQL Databases](#nosql-databases)  
 &nbsp;&nbsp;&nbsp;&nbsp;[Unit Testing](#unit-testing)  
 &nbsp;&nbsp;&nbsp;&nbsp;[Dependency Injection](#dependency-injection)  
 &nbsp;&nbsp;&nbsp;&nbsp;[Asynchrony](#asynchrony)  
@@ -40,8 +45,9 @@ For now, it's public for early experimenters to tinker with.
 
 Post suggestions/questions over in our [getting started](https://github.com/RSGTechSupport/RSGBot/issues/1) thread.
 
-> At this stage, we'd greatly appreciate help with the ["access token retrieval app"](https://github.com/RSGTechSupport/RSGBot/#todo-access-token-retrieval-app).
-> Other things we need help with are listed in ["things to do"](https://github.com/RSGTechSupport/RSGBot/#things-to-do).
+> We'd appreciate help with the ["access token retrieval app"](https://github.com/RSGTechSupport/RSGBot/#todo-access-token-retrieval-app).  
+> Other things we need help with are listed in ["things to do"](https://github.com/RSGTechSupport/RSGBot/#things-to-do).  
+> Contributors get access to an exclusive flair on reddit. They also get their names listed here alongside a description of what they've contributed.
 
 ## Contributing
 ### Getting Started
@@ -53,7 +59,7 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
 4. Open the root folder of the clone in vsc.
 5. Open vsc's [integrated terminal](https://code.visualstudio.com/docs/editor/integrated-terminal).
 6. Install dependencies: `yarn install`.
-7. [With your everyday reddit account, create a reddit "app". Retrieve an oauth refresh token.](https://github.com/reddit-archive/reddit/wiki/OAuth2).  
+7. [With your everyday reddit account, create a reddit "app". Retrieve an oauth refresh token.](https://github.com/reddit-archive/reddit/wiki/OAuth2)  
    Add your app's id and secret along with your refresh token to a `variables.env` file at the root of your project:
    ```
    CLIENT_ID=<app id>
@@ -84,9 +90,9 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
     [Application]: No new submissions
     ```
     - `nodemon` restarts the application when you save changes.
-    - The Reddit API has a concept called [listings](https://www.reddit.com/dev/api/#listings). Listings are chronologically ordered lists of "things" (comments/posts etc). When we retrieve from a listing, we specify 
+    - The Reddit API terms chronologically ordered lists of "things" (comments/posts etc) ["listings"](https://www.reddit.com/dev/api/#listings). When we retrieve from a listing, we specify 
       that we want only things posted after the last thing we processed, e.g. comments posted after the last comment we processed. Things are specified using ["fullnames"](https://www.reddit.com/dev/api/#fullnames), e.g. `t1_fyfqmt2`.
-      Above you'll notice our use of fullnames to retrieve things we haven't processed. Note that the Reddit API refers to "chronologically after" as before, i.e. if thing *a* was posted after (chronologically) thing *b*,
+      Above you'll notice our use of fullnames to specify what we want to retrieve. Note that the Reddit API refers to "chronologically after" as before, i.e. if thing *a* was posted after (chronologically) thing *b*,
       thing *a* is before thing *b* in the listing. 
 8. Navigate to [r/RSGBot](https://www.reddit.com/r/RSGBot). This is our test subreddit. The bot is configured to poll it in development mode. Post a comment or submission to verify that your bot is polling it properly:
     ```
@@ -228,16 +234,32 @@ Requested by r/Singapore mods.
 ##### TODO Auto-Flairing
 Use ML to detect post category, flair accordingly.
 
-## Related Concepts
+## Related
+We'd like this project to be accessible. In this section we touch on concepts and tools
+we've used and provide links to in-depth information.
+
+### Source Control
+TODO Basics
+TODO git/github
+### Static Typing
+TODO Basics
+TODO Typescript
+### Package Management
+TODO Basics
+TODO Yarn
+### Authorization and OAuth 2.0
+TODO Basics
+TODO OAuth 2.0
+### NoSQL Databases
+TODO Basics
+TODO MongoDB
 ### Unit Testing
-TODO
-- What
-- Why
+TODO unit tests
+TODO mocking
+TODO jest
 ### Dependency Injection
-TODO
-- What
-- Why
+TODO Basics
+TODO tsyringe
 ### Asynchrony
-TODO
-- What
-- What
+TODO callbacks
+TODO async await
