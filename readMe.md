@@ -45,7 +45,6 @@ For now, it's public for early experimenters to tinker with.
 
 Post suggestions/questions over in our [getting started](https://github.com/RSGTechSupport/RSGBot/issues/1) thread.
 
-> We'd appreciate help with the ["access token retrieval app"](https://github.com/RSGTechSupport/RSGBot/#todo-access-token-retrieval-app).  
 > Other things we need help with are listed in ["things to do"](https://github.com/RSGTechSupport/RSGBot/#things-to-do).  
 > Contributors get access to an exclusive flair on reddit. They also get their names listed here alongside a description of what they've contributed.
 
@@ -200,7 +199,7 @@ Some snoowrap typings are wrong.
 These are things we need help with right now. Note that we aren't limiting contributions to this list - if you have an idea for RSGBot, open an issue and tell us more. 
 
 #### Infrastructure
-##### TODO Access Token Retrieval App
+##### WIP (@JeremyTCD) Access Token Retrieval App
 The C# library we used for the existing bot, [Reddit.Net](https://github.com/sirkris/Reddit.NET#solution-projects), came with a [utility for retrieving access tokens](https://www.youtube.com/watch?v=xlWhLyVgN2s).
 Unfortunately it requires Visual Studio and some familiarity with .Net to run. Would be useful to reproduce such a utility in this repository.
 
