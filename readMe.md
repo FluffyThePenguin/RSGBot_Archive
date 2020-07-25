@@ -45,7 +45,8 @@ For now, it's public for early experimenters to tinker with.
 
 Post suggestions/questions over in our [getting started](https://github.com/RSGTechSupport/RSGBot/issues/1) thread.
 
-> Other things we need help with are listed in ["things to do"](https://github.com/RSGTechSupport/RSGBot/#things-to-do).  
+> Things we need help with are listed in ["things to do"](https://github.com/RSGTechSupport/RSGBot/#things-to-do).  
+>   
 > Contributors get access to an exclusive flair on reddit. They also get their names listed here alongside a description of what they've contributed.
 
 ## Contributing
@@ -54,19 +55,13 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
 1. Install [visual studio code (vsc)](https://code.visualstudio.com/download).
 2. Install [yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable).
 3. [Fork this repository](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo).
-3. [Clone your fork](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
-4. Open the root folder of the clone in vsc.
-5. Open vsc's [integrated terminal](https://code.visualstudio.com/docs/editor/integrated-terminal).
-6. Install dependencies: `yarn install`.
-7. [With your everyday reddit account, create a reddit "app". Retrieve an oauth refresh token.](https://github.com/reddit-archive/reddit/wiki/OAuth2)  
-   Add your app's id and secret along with your refresh token to a `variables.env` file at the root of your project:
-   ```
-   CLIENT_ID=<app id>
-   CLIENT_SECRET=<app secret>
-   REFRESH_TOKEN=<refresh token>
-   ```
-   Note that `.gitignore` is configured to ignore exactly `variables.env`. Be careful not to push your secrets to Github.
-7. Start the bot: `yarn run dev`. You'll should see output like this:
+4. [Clone your fork](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
+5. Open the root folder of the clone in vsc.
+6. Open vsc's [integrated terminal](https://code.visualstudio.com/docs/editor/integrated-terminal).
+7. Install dependencies: `yarn install`.
+8. Start the bot: `yarn run dev` (refer to [Typescript Version](#typescript-version) if you get errors, [create an issue](https://github.com/RSGTechSupport/RSGBot/issues/new/choose) if errors persist).  
+   If it's your first time starting the bot, you'll be guided through authorizing the bot to use your account during development.
+   After authorizing, you'll see output like this:
     ```
     yarn run v1.12.3
     $ set RSGBOT_ENV=development && nodemon ./src/index.ts
@@ -93,7 +88,7 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
       that we only want things posted after the last thing we processed, e.g. comments posted after the last comment we processed. Things are specified using ["fullnames"](https://www.reddit.com/dev/api/#fullnames), e.g. `t1_fyfqmt2`.
       Above you'll notice our use of fullnames to specify what we want to retrieve. Note that the Reddit API refers to "chronologically after" as before, i.e. if thing *a* was posted after (chronologically) thing *b*,
       thing *a* is before thing *b* in the listing. 
-8. Navigate to [r/RSGBot](https://www.reddit.com/r/RSGBot). This is our test subreddit. In development mode, the bot is configured to poll it. Post a comment or submission there to verify that your bot polls properly:
+9. Navigate to [r/RSGBot](https://www.reddit.com/r/RSGBot). This is our test subreddit. In development mode, the bot is configured to poll it. Post a comment or submission there to verify that your bot polls properly:
     ```
     [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htb1ai
     [Application]: No new comments
@@ -176,6 +171,10 @@ TODO vsc steps into node internals despite
 
 in `.vscode/launch.json`. You'll notice yourself stepping through files in the `<node_internals>` directory (hover over tab of open file to see it's path).
 For now, set a breakpoint in your code after the internals and click continue to skip all that.
+
+#### Reddit API Authorization
+The first time you start the bot, you go through an authorization process. Check out [Reddit's documentation](https://github.com/reddit-archive/reddit/wiki/oauth2) 
+for details on this process.
 
 #### VSC Codebase Navigation
 Press `f1` to go to definition. This is a good way to figure out what arguments a snoowrap method takes.
