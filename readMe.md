@@ -217,6 +217,9 @@ See src/shared/Logger for details. Need some way to store and expose logs so dev
 So we hit the Reddit API less. Things like when a users account was created can be stored in MongoDB.
 
 #### Features
+##### TODO Schedules Posts
+Private message command to shedule posts.
+
 ##### TODO Flair System
 Replicate [existing system](https://www.reddit.com/r/singapore/comments/hpikf7/level_system_trial_2/). Try determining user's first activity on
 r/Singapore using Pushshift.
