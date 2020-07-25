@@ -9,33 +9,49 @@ import Configuration from "./shared/Configuration";
 import { Mode } from "./shared/Mode";
 import CommandParser from "./shared/CommandParser";
 import Logger from "./shared/Logger";
+import authorizer from "./tools/Authorizer";
 
-// Get secrets
-const clientID = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-const refreshToken = process.env.REFRESH_TOKEN;
+let clientID = process.env.CLIENT_ID;
+let clientSecret = process.env.CLIENT_SECRET;
+let refreshToken = process.env.REFRESH_TOKEN;
 
-// Get configuration
-const mode = process.env.RSGBOT_ENV === 'production' ? Mode.production : Mode.development;
-const subreddit = process.env.SUBREDDIT ?? 'RSGBot';
+if (clientID == null || clientSecret == null || refreshToken == null) {
+    authorizer.
+        start().
+        then(authorizationResult => {
+            clientID = authorizationResult.clientID;
+            clientSecret = authorizationResult.clientSecret;
+            refreshToken = authorizationResult.refreshToken;
 
-// Register services
-container.registerInstance(Configuration, new Configuration(mode, subreddit));
-container.registerInstance(snoowrap, new snoowrap({
-    userAgent: 'RSGBot v0.1',
-    clientId: clientID,
-    clientSecret: clientSecret,
-    refreshToken: refreshToken
-}));
-container.register('ICommandParser', CommandParser);
-container.register('ILogger', Logger);
+            onAuthorized();
+        });
+}else{
+    onAuthorized();
+}
 
-// Register a feature
-// - Register your feature for interfaces it implements. Note that ICommentFeature and ISubmissionFeature both implement IFeature.
-container.register('IFeature', ExampleFeature);
-container.register('ICommentFeature', ExampleFeature);
-container.register('ISubmissionFeature', ExampleFeature);
+function onAuthorized() {
+    // Get configuration
+    const mode = process.env.RSGBOT_ENV === 'production' ? Mode.production : Mode.development;
+    const subreddit = process.env.SUBREDDIT ?? 'RSGBot';
 
-// Start application
-const application = container.resolve(Application);
-application.start();
+    // Register services
+    container.registerInstance(Configuration, new Configuration(mode, subreddit));
+    container.registerInstance(snoowrap, new snoowrap({
+        userAgent: 'RSGBot v0.1',
+        clientId: clientID,
+        clientSecret: clientSecret,
+        refreshToken: refreshToken
+    }));
+    container.register('ICommandParser', CommandParser);
+    container.register('ILogger', Logger);
+
+    // Register a feature
+    // - Register your feature for interfaces it implements. Note that ICommentFeature and ISubmissionFeature both implement IFeature.
+    container.register('IFeature', ExampleFeature);
+    container.register('ICommentFeature', ExampleFeature);
+    container.register('ISubmissionFeature', ExampleFeature);
+
+    // Start application
+    const application = container.resolve(Application);
+    application.start();
+}

@@ -14,6 +14,7 @@
             ],
             "program": "${workspaceFolder}/src/index.ts",
             "preLaunchTask": "tsc: build - tsconfig.json",
+            "outputCapture": "all",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ]

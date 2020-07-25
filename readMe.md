@@ -3,38 +3,38 @@
 r/Singapore's community building bot.
 
 ## Table of Contents
-[Overview](#overview)  
-[Contributing](#contributing)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Getting Started](#getting-started)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Contributing a Feature](#contributing-a-feature)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Tips](#tips)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Debugging](#debugging)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[VSC Codebase Navigation](#vsc-codebase-navigation)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Typescript/Snoowrap await Issue](#typescriptsnoowrap-await-issue)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Snoowrap typings issue](#snoowrap-typings-issue)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Things To Do](#things-to-do)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Infrastructure](#infrastructure)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Access Token Retrieval App](#todo-access-token-retrieval-app)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Shared](#shared)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[CommandParser](#todo-commandparser)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Logger](#todo-logger)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[IMessageFeature](#todo-imessagefeature)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Features](#features)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Flair System](#todo-flair-system)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Event Threads](#todo-event-threads)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Translation](#todo-translation)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Auto-Remove Duplicate Links with Different Query Parameters](#todo-auto-remove-duplicate-links-with-different-query-parameters)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Limit Submissions to 5 a day](#todo-limit-submissions-to-5-a-day)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Auto-Flairing](#todo-auto-flairing)  
-[Related](#related)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Source Control](#source-control)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Static Typing](#static-typing)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Package Management](#package-management)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Authorization and OAuth 2.0](#authorization-and-oauth-20)  
-&nbsp;&nbsp;&nbsp;&nbsp;[NoSQL Databases](#nosql-databases)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Unit Testing](#unit-testing)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Dependency Injection](#dependency-injection)  
-&nbsp;&nbsp;&nbsp;&nbsp;[Asynchrony](#asynchrony)  
+- [Overview](#overview)  
+- [Contributing](#contributing)
+  - [Getting Started](#getting-started)
+  - [Contributing a Feature](#contributing-a-feature)
+  - [Tips](#tips)
+    - [Debugging](#debugging)
+    - [VSC Codebase Navigation](#vsc-codebase-navigation)
+    - [Typescript/Snoowrap await Issue](#typescriptsnoowrap-await-issue)
+    - [Snoowrap typings issue](#snoowrap-typings-issue)
+  - [Things To Do](#things-to-do)
+    - [Infrastructure](#infrastructure)
+      - [Access Token Retrieval App](#todo-access-token-retrieval-app)
+    - [Shared](#shared)
+      - [CommandParser](#todo-commandparser)
+      - [Logger](#todo-logger)
+      - [IMessageFeature](#todo-imessagefeature)
+    - [Features](#features)
+      - [Flair System](#todo-flair-system)
+      - [Event Threads](#todo-event-threads)
+      - [Translation](#todo-translation)
+      - [Auto-Remove Duplicate Links with Different Query Parameters](#todo-auto-remove-duplicate-links-with-different-query-parameters)
+      - [Limit Submissions to 5 a day](#todo-limit-submissions-to-5-a-day)
+      - [Auto-Flairing](#todo-auto-flairing)
+- [Related](#related)
+  - [Source Control](#source-control)
+  - [Static Typing](#static-typing)
+  - [Package Management](#package-management)
+  - [Authorization and OAuth 2.0](#authorization-and-oauth-20)
+  - [NoSQL Databases](#nosql-databases)
+  - [Unit Testing](#unit-testing)
+  - [Dependency Injection](#dependency-injection)
+  - [Asynchrony](#asynchrony)
 
 ## Overview
 
@@ -45,7 +45,8 @@ For now, it's public for early experimenters to tinker with.
 
 Post suggestions/questions over in our [getting started](https://github.com/RSGTechSupport/RSGBot/issues/1) thread.
 
-> Other things we need help with are listed in ["things to do"](https://github.com/RSGTechSupport/RSGBot/#things-to-do).  
+> Things we need help with are listed in ["things to do"](https://github.com/RSGTechSupport/RSGBot/#things-to-do).  
+>   
 > Contributors get access to an exclusive flair on reddit. They also get their names listed here alongside a description of what they've contributed.
 
 ## Contributing
@@ -54,19 +55,13 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
 1. Install [visual studio code (vsc)](https://code.visualstudio.com/download).
 2. Install [yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable).
 3. [Fork this repository](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo).
-3. [Clone your fork](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
-4. Open the root folder of the clone in vsc.
-5. Open vsc's [integrated terminal](https://code.visualstudio.com/docs/editor/integrated-terminal).
-6. Install dependencies: `yarn install`.
-7. [With your everyday reddit account, create a reddit "app". Retrieve an oauth refresh token.](https://github.com/reddit-archive/reddit/wiki/OAuth2)  
-   Add your app's id and secret along with your refresh token to a `variables.env` file at the root of your project:
-   ```
-   CLIENT_ID=<app id>
-   CLIENT_SECRET=<app secret>
-   REFRESH_TOKEN=<refresh token>
-   ```
-   Note that `.gitignore` is configured to ignore exactly `variables.env`. Be careful not to push your secrets to Github.
-7. Start the bot: `yarn run dev`. You'll should see output like this:
+4. [Clone your fork](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
+5. Open the root folder of the clone in vsc.
+6. Open vsc's [integrated terminal](https://code.visualstudio.com/docs/editor/integrated-terminal).
+7. Install dependencies: `yarn install`.
+8. Start the bot: `yarn run dev` (refer to [Typescript Version](#typescript-version) if you get errors, [create an issue](https://github.com/RSGTechSupport/RSGBot/issues/new/choose) if errors persist).  
+   If it's your first time starting the bot, you'll be guided through authorizing the bot to use your account during development.
+   After authorizing, you'll see output like this:
     ```
     yarn run v1.12.3
     $ set RSGBOT_ENV=development && nodemon ./src/index.ts
@@ -88,12 +83,12 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
     [Application]: No new comments
     [Application]: No new submissions
     ```
-    - `nodemon` restarts the application when you save changes.
-    - The Reddit API terms chronologically ordered lists of "things" (comments/posts etc) ["listings"](https://www.reddit.com/dev/api/#listings). When we retrieve from a listing, we specify 
+      - `nodemon` restarts the application when you save changes.
+      - The Reddit API terms chronologically ordered lists of "things" (comments/posts etc) ["listings"](https://www.reddit.com/dev/api/#listings). When we retrieve from a listing, we specify 
       that we only want things posted after the last thing we processed, e.g. comments posted after the last comment we processed. Things are specified using ["fullnames"](https://www.reddit.com/dev/api/#fullnames), e.g. `t1_fyfqmt2`.
       Above you'll notice our use of fullnames to specify what we want to retrieve. Note that the Reddit API refers to "chronologically after" as before, i.e. if thing *a* was posted after (chronologically) thing *b*,
       thing *a* is before thing *b* in the listing. 
-8. Navigate to [r/RSGBot](https://www.reddit.com/r/RSGBot). This is our test subreddit. In development mode, the bot is configured to poll it. Post a comment or submission there to verify that your bot polls properly:
+9. Navigate to [r/RSGBot](https://www.reddit.com/r/RSGBot). This is our test subreddit. In development mode, the bot is configured to poll it. Post a comment or submission there to verify that your bot polls properly:
     ```
     [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htb1ai
     [Application]: No new comments
@@ -102,7 +97,7 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
     [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htex19
     [Application]: 1 new comments found
     ```
-    - `ExampleFeature` echos comments/submissions. You should see replies from your bot.
+      - `ExampleFeature` echos comments/submissions. You should see replies from your bot.
 
 ### Contributing a Feature
 Features are things like auto-flairing of posts, removal of duplicate posts,
@@ -137,9 +132,9 @@ TODO document testing, add example tests
         }
     }
     ```
-    - It implements `ICommentFeature.onComment` and `ISubmissionFeature.onSubmission` to react to new comments and submissions. 
-    - It does nothing in `IFeature.onInit`. Other features might use this method to register proactive events, e.g. logic to create a meme competition thread at the same time every week.
-    - `_snoowrap` is the Reddit API wrapper. [snoowrap repository](https://github.com/not-an-aardvark/snoowrap).
+      - It implements `ICommentFeature.onComment` and `ISubmissionFeature.onSubmission` to react to new comments and submissions. 
+      - It does nothing in `IFeature.onInit`. Other features might use this method to register proactive events, e.g. logic to create a meme competition thread at the same time every week.
+      - `_snoowrap` is the Reddit API wrapper. [snoowrap repository](https://github.com/not-an-aardvark/snoowrap).
 2. Create a new git branch: `git checkout -b add_<feature_name>`.
 3. Add a new folder under src/features or copy the `src/features/exampleFeature` folder.
 4. Implement onComment/onSubmission/onInit in your feature.
@@ -159,8 +154,8 @@ This project includes TypeScript 3.9.7 as a dependency. If you've already instal
 This might be an issue if your installed version is old.
 
 To use the included TypesScript version: 
-- Open a `.ts` file. At the bottom right hand corner of vsc, you should see "TypeScript x.x.x". 
-- Click the version number > Select TypeScript Version > Use Workspace Version.
+  - Open a `.ts` file. At the bottom right hand corner of vsc, you should see "TypeScript x.x.x". 
+  - Click the version number > Select TypeScript Version > Use Workspace Version.
 
 #### Debugging
 Set a breakpoint, then, in vsc's main menu, click run > start debugging or press f5. 
@@ -177,6 +172,10 @@ TODO vsc steps into node internals despite
 in `.vscode/launch.json`. You'll notice yourself stepping through files in the `<node_internals>` directory (hover over tab of open file to see it's path).
 For now, set a breakpoint in your code after the internals and click continue to skip all that.
 
+#### Reddit API Authorization
+The first time you start the bot, you go through an authorization process. Check out [Reddit's documentation](https://github.com/reddit-archive/reddit/wiki/oauth2) 
+for details on this process.
+
 #### VSC Codebase Navigation
 Press `f1` to go to definition. This is a good way to figure out what arguments a snoowrap method takes.
 
@@ -184,8 +183,8 @@ Press `f1` to go to definition. This is a good way to figure out what arguments 
 Awaiting some snoowrap methods causes typescript error 1062.
 
 This is a known issue:
-- https://github.com/not-an-aardvark/snoowrap/issues/221
-- https://github.com/DefinitelyTyped/DefinitelyTyped/issues/33139
+  - https://github.com/not-an-aardvark/snoowrap/issues/221
+  - https://github.com/DefinitelyTyped/DefinitelyTyped/issues/33139
 
 We've verified that the underlying code is safe. If you encounter 1062, add `//@ts-ignore` above the line.
 
