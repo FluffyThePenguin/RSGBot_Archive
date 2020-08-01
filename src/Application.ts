@@ -51,7 +51,7 @@ export default class Application {
         const getMePromise = snoowrap.getMe();
         const latestCommentPromise = pollComments ? snoowrap.getNewComments(subredditName, { limit: 1 }) : resolvedNullPromise;
         const latestSubmissionPromise = pollSubmissions ? snoowrap.getNew(subredditName, { limit: 1 }) : resolvedNullPromise;
-        // TODO snoowrap typings for getIndex are wrong
+        // TODO snoowrap typings for getInbox are wrong
         // @ts-ignore
         const latestMessagePromise = pollPrivateMessages ? snoowrap.getInbox({ limit: 1 }) : resolvedNullPromise; // Note that inbox messages include both comments and private messages
 
