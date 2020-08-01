@@ -1,21 +1,27 @@
-import snoowrap from "snoowrap";
+import snoowrap, { Comment, Listing, PrivateMessage, Submission } from "snoowrap";
 import { inject, injectable, injectAll, singleton } from "tsyringe";
 import Configuration from "./shared/Configuration";
 import ICommandParser from "./shared/ICommandParser";
 import ICommentFeature from "./shared/ICommentFeature";
 import IFeature from "./shared/IFeature";
 import ILogger from "./shared/ILogger";
+import IPrivateMessageFeature from "./shared/IPrivateMessageFeature";
 import ISubmissionFeature from "./shared/ISubmissionFeature";
 
 // TODO
-// - poll messages
 // - improve poll method efficiency
 //   - Promise.any so all requests in features run concurrently
+// - avoid allocations where possible
 @singleton()
 @injectable()
 export default class Application {
+    private readonly _applicationInitializationTag = 'ApplicationInitialization';
+    private readonly _applicationTag = 'Application';
+    private readonly _resolvedNullPromise = Promise.resolve(null);
+
     constructor(@injectAll('ICommentFeature') private readonly _commentFeatures: ICommentFeature[],
         @injectAll('ISubmissionFeature') private readonly _submissionFeatures: ISubmissionFeature[],
+        @injectAll('IPrivateMessageFeature') private readonly _privateMessageFeatures: IPrivateMessageFeature[],
         @injectAll('IFeature') private readonly _features: IFeature[],
         @inject('ICommandParser') private readonly _commandParser: ICommandParser,
         @inject('ILogger') private readonly _logger: ILogger,
@@ -28,111 +34,146 @@ export default class Application {
         const subredditName = this._configuration.subreddit;
         const snoowrap = this._snoowrap;
         const logger = this._logger;
+        const applicationInitializationTag = this._applicationInitializationTag;
+        const resolvedNullPromise = this._resolvedNullPromise;
 
+        // TODO these arrays can't be empty right now https://github.com/microsoft/tsyringe/issues/63
         // Check if we need to poll stuff
-        const pollComments = this._commentFeatures.length > 0;
-        const pollSubmissions = this._submissionFeatures.length > 0;
+        const pollComments = this.checkPollingThing(this._commentFeatures, 'comments');
+        const pollSubmissions = this.checkPollingThing(this._submissionFeatures, 'submissions');
+        const pollPrivateMessages = this.checkPollingThing(this._privateMessageFeatures, 'private messages');
 
-        logger.log('Application', `Poll comments: ${pollComments}`);
-        logger.log('Application', `Poll submissions: ${pollSubmissions}`);
-
-        if (!pollComments && !pollSubmissions) { // No features registered
+        if (!pollComments && !pollSubmissions && !pollPrivateMessages) { // No features registered
             return;
-        }
-
-        // Call init methods
-        for (const feature of this._features) {
-            feature.onInit();
         }
 
         // Start requests for bot account info, lastest comment on subreddit and lastest submission on subreddit
         const getMePromise = snoowrap.getMe();
-        const latestCommentPromise = pollComments ? snoowrap.getNewComments(subredditName, { limit: 1 }) : Promise.resolve(null);
-        const latestSubmissionPromise = pollSubmissions ? snoowrap.getNew(subredditName, { limit: 1 }) : Promise.resolve(null);
+        const latestCommentPromise = pollComments ? snoowrap.getNewComments(subredditName, { limit: 1 }) : resolvedNullPromise;
+        const latestSubmissionPromise = pollSubmissions ? snoowrap.getNew(subredditName, { limit: 1 }) : resolvedNullPromise;
+        // TODO snoowrap typings for getIndex are wrong
+        // @ts-ignore
+        const latestMessagePromise = pollPrivateMessages ? snoowrap.getInbox({ limit: 1 }) : resolvedNullPromise; // Note that inbox messages include both comments and private messages
 
         // Wait for requests
-        const values = await Promise.all([getMePromise, latestCommentPromise, latestSubmissionPromise]); // By supplying the same number of promises in the same order, we get static typing for resolved values
+        const values = await Promise.all([getMePromise, latestCommentPromise, latestSubmissionPromise, latestMessagePromise]); // By supplying the same number of promises in the same order, we get static typing for resolved values
 
         // Set bot username
         const botUsername = values[0].name;
-        logger.log('Application', `Bot username: ${botUsername}`);
+        logger.log(applicationInitializationTag, `Bot username: ${botUsername}`);
 
-        // Set before values
-        // - For the Reddit API, when we request a listing (https://www.reddit.com/dev/api/#listings) of "things" (comments/posts/etc) we can specify a
-        //  "before" string representing a thing. Only things created *after* it are returned.
-        // - When the app starts, we need to set our before string to the latest thing's fullname (https://www.reddit.com/dev/api/#fullnames). 
-        //   Otherwise we could end up retrieving things we've already processed.
-        // - values[1] is a list containing just the latest comment. Set before to its name. If there is no latest comment (unlikely), set
-        //   before to ''. API ignores before if it's an empty string.
+        // Before values
+        // - When we request a listing (https://www.reddit.com/dev/api/#listings) of "things" (comments/posts/etc) we can specify a
+        //  "before" string representing a thing. Only things created after it are returned.
+        // - When the app starts, we set our before string to the latest thing's fullname (https://www.reddit.com/dev/api/#fullnames).
+        //   Otherwise we could end up retrieving things we've already processed. Consider a cleaner solution > e.g. after successfully processing a thing,
+        //   store its fullname in persistent memory.
+        // - API ignores the before string if it's an empty string.
 
-        const commentsBefore = values[1] == null ? '' : values[1][0]?.name ?? '';
-        logger.log('Application', `Latest comment fullname: ${commentsBefore}`);
+        const commentsBefore = this.getInitialBefore(values[1], 'comment');
+        const submissionsBefore = this.getInitialBefore(values[2], 'submission');
+        const messagesBefore = this.getInitialBefore(values[3], 'message');
 
-        const submissionsBefore = values[2] == null ? '' : values[2][0]?.name ?? '';
-        logger.log('Application', `Latest submission fullname: ${submissionsBefore}`);
+        // Call init
+        for (const feature of this._features) {
+            feature.onInit();
+        }
 
         // Start polling
-        this.poll(commentsBefore, submissionsBefore, botUsername, subredditName, pollComments, pollSubmissions);
+        this.poll(commentsBefore, submissionsBefore, messagesBefore,
+            botUsername, subredditName,
+            pollComments, pollSubmissions, pollPrivateMessages);
     }
 
     // Poll
-    private async poll(commentsBefore: string, submissionsBefore: string,
-        botUsername: string, subredditName: string, pollComments: boolean, pollSubmissions: boolean): Promise<void> {
+    private async poll(commentsBefore: string, submissionsBefore: string, messagesBefore: string,
+        botUsername: string, subredditName: string,
+        pollComments: boolean, pollSubmissions: boolean, pollPrivateMessages: boolean): Promise<void> {
         const snoowrap = this._snoowrap;
         const logger = this._logger;
+        const applicationTag = this._applicationTag;
+        const resolvedNullPromise = this._resolvedNullPromise;
 
         while (true) {
-            logger.log('Application', `Retrieving comments before: ${commentsBefore} and submissions before: ${submissionsBefore}`);
+            // TODO doesn't makes sense if polling comments/submissions/private messages is disabled
+            logger.log(applicationTag, `Retrieving comments before: ${commentsBefore}, submissions before: ${submissionsBefore} and messages before: ${messagesBefore}`);
 
             // Request new comments and submissions
-            const newCommentsPromise = pollComments ? snoowrap.getNewComments(subredditName, { before: commentsBefore, limit: 100 }) : Promise.resolve(null);
-            const newSubmissionsPromise = pollSubmissions ? snoowrap.getNew(subredditName, { before: submissionsBefore, limit: 100 }) : Promise.resolve(null);
+            const newCommentsPromise = pollComments ? snoowrap.getNewComments(subredditName, { before: commentsBefore, limit: 100 }) : resolvedNullPromise;
+            const newSubmissionsPromise = pollSubmissions ? snoowrap.getNew(subredditName, { before: submissionsBefore, limit: 100 }) : resolvedNullPromise;
+            // TODO snoowrap typings for getInbox are wrong
+            // @ts-ignore
+            const newMessagesPromise = pollPrivateMessages ? snoowrap.getInbox({ before: messagesBefore, limit: 100 }) : resolvedNullPromise;
 
             // Wait for new comments and submissions
-            const values = await Promise.all([newCommentsPromise, newSubmissionsPromise]); // By supplying the same number of promises in the same order, we get static typing for resolved values
+            const values = await Promise.all([newCommentsPromise, newSubmissionsPromise, newMessagesPromise]); // By supplying the same number of promises in the same order, we get static typing for resolved values
 
             const newComments = values[0];
-            if (newComments != null) { // TS is smart enough to know that values[0] is a snoowrap.Listing<snoowrap.Comment>
-                const numNewComments = newComments.length;
-                const foundNewComments = numNewComments > 0;
-
-                if (foundNewComments) {
-                    logger.log('Application', `${numNewComments} new comments found`);
-
-                    commentsBefore = await this.processNewComments(newComments, botUsername);
-                } else {
-                    logger.log('Application', `No new comments`);
-                }
+            if (newComments != null && this.containsNew(newComments, 'comments')) {
+                commentsBefore = await this.processNewComments(newComments, botUsername);
             }
 
             const newSubmissions = values[1];
-            if (newSubmissions != null) { // TS is smart enough to know that values[0] is a snoowrap.Listing<snoowrap.Submission>
-                const numNewSubmissions = newSubmissions.length;
-                const foundNewSubmissions = numNewSubmissions > 0;
-
-                if (foundNewSubmissions) {
-                    logger.log('Application', `${numNewSubmissions} new submissions found`);
-
-                    submissionsBefore = await this.processNewSubmissions(newSubmissions, botUsername);
-                } else {
-                    logger.log('Application', `No new submissions`);
-                }
+            if (newSubmissions != null && this.containsNew(newSubmissions, 'submissions')) {
+                submissionsBefore = await this.processNewSubmissions(newSubmissions, botUsername);
             }
 
-            await this.sleep(4000);
+            const newMessages = values[2];
+            if (newMessages != null && this.containsNew(newMessages, 'messages')) {
+                messagesBefore = await this.processNewPrivateMessages(newMessages, botUsername);
+            }
+
+            await this.sleep(6000);
         }
     }
 
-    private async processNewSubmissions(newSubmissions: snoowrap.Listing<snoowrap.Submission>,
-        botUsername: string): Promise<string> {
+    private async processNewPrivateMessages(newMessages: Listing<PrivateMessage | Comment>, botUsername: string): Promise<string> {
+        const privateMessageFeatures = this._privateMessageFeatures;
+        const commandParser = this._commandParser;
+        const logger = this._logger;
+        const applicationTag = this._applicationTag;
+
+        for (const message of newMessages) {
+            // Depending on account settings, messages may include comments
+            // TODO snoowrap adds a was_comment property to each object in the listing
+            // @ts-ignore
+            if (message.was_comment) {
+                logger.log(applicationTag, `Ignoring comment message - we recommend disabling reddit.com/settings/notifications > "Conversations in inbox"`);
+                continue;
+            }
+
+            // Ignore private messages by bot account
+            if (message.author.name === botUsername) {
+                logger.log(applicationTag, `Ignoring bot private message`);
+                continue;
+            }
+
+            // Ignore messages distinguished as admin. Attempting to respond to such messages causes 403s.
+            if (message.distinguished === 'admin') {
+                logger.log(applicationTag, `Ignoring admin message`);
+                continue;
+            }
+
+            const command = commandParser.tryParse(message.body);
+
+            for (const privateMessageFeature of privateMessageFeatures) {
+                await privateMessageFeature.onPrivateMessage(message as PrivateMessage, command); // was_comment false so it's a private message
+            }
+        }
+
+        return newMessages[newMessages.length - 1].name;
+    }
+
+    private async processNewSubmissions(newSubmissions: Listing<snoowrap.Submission>, botUsername: string): Promise<string> {
         const submissionFeatures = this._submissionFeatures;
         const logger = this._logger;
+        const applicationTag = this._applicationTag;
 
         for (const submission of newSubmissions) {
             // Ignore comments by bot account
             if (submission.author.name === botUsername) {
-                logger.log('Application', `Ignoring bot submission`);
-                
+                logger.log(applicationTag, `Ignoring bot submission`);
+
                 continue;
             }
 
@@ -142,20 +183,19 @@ export default class Application {
         }
 
         return newSubmissions[newSubmissions.length - 1].name;
-
     }
 
-    private async processNewComments(newComments: snoowrap.Listing<snoowrap.Comment>,
-        botUsername: string): Promise<string> {
+    private async processNewComments(newComments: Listing<Comment>, botUsername: string): Promise<string> {
         const commentsFeatures = this._commentFeatures;
         const commandParser = this._commandParser;
         const logger = this._logger;
+        const applicationTag = this._applicationTag;
 
         for (const comment of newComments) {
             // Ignore comments by bot account
             if (comment.author.name === botUsername) {
-                logger.log('Application', `Ignoring bot comment`);
-                
+                logger.log(applicationTag, `Ignoring bot comment`);
+
                 continue;
             }
 
@@ -167,6 +207,42 @@ export default class Application {
         }
 
         return newComments[newComments.length - 1].name;
+    }
+
+    private checkPollingThing<T>(thingFeatures: T[], thingName: string): boolean {
+        if (thingFeatures.length > 0) {
+            this._logger.log(this._applicationInitializationTag, `Polling ${thingName}`);
+            return true;
+        } else {
+            this._logger.log(this._applicationInitializationTag, `Not polling ${thingName}`);
+            return false;
+        }
+    }
+
+    private containsNew<T>(listing: Listing<T>, thingName: string): boolean {
+        const numNew = listing.length;
+        const foundNew = numNew > 0;
+
+        if (foundNew) {
+            this._logger.log(this._applicationTag, `${numNew} new ${thingName} found`);
+
+            return true;
+        }
+
+        this._logger.log(this._applicationTag, `No new ${thingName}`);
+
+        return false;
+    }
+
+    private getInitialBefore(listing: Listing<Comment> | Listing<Submission> | Listing<PrivateMessage | Comment> | null, thingName: string): string{
+        if(listing == null){
+            return '';
+        }
+        
+        const result = listing[0]?.name ?? '';
+        this._logger.log(this._applicationInitializationTag, `Latest ${thingName} fullname: ${result}`);
+
+        return result;
     }
 
     private sleep(timeMilliseconds: number): Promise<void> {
