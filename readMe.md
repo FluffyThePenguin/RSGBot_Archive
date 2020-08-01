@@ -13,19 +13,22 @@ r/Singapore's community building bot.
     - [Typescript/Snoowrap await Issue](#typescriptsnoowrap-await-issue)
     - [Snoowrap typings issue](#snoowrap-typings-issue)
   - [Things To Do](#things-to-do)
-    - [Infrastructure](#infrastructure)
-      - [Access Token Retrieval App](#todo-access-token-retrieval-app)
+    - [Infrastructure]
+      - [Testing](#testing)
+      - [Error Handling](#error-handling)
+      - [CI](#ci)
     - [Shared](#shared)
-      - [CommandParser](#todo-commandparser)
-      - [Logger](#todo-logger)
-      - [IMessageFeature](#todo-imessagefeature)
+      - [CommandParser](#commandparser)
+      - [Logger](#logger)
+      - [MongoDB Client](#mongodb-client)
     - [Features](#features)
-      - [Flair System](#todo-flair-system)
-      - [Event Threads](#todo-event-threads)
-      - [Translation](#todo-translation)
-      - [Auto-Remove Duplicate Links with Different Query Parameters](#todo-auto-remove-duplicate-links-with-different-query-parameters)
-      - [Limit Submissions to 5 a day](#todo-limit-submissions-to-5-a-day)
-      - [Auto-Flairing](#todo-auto-flairing)
+      - [Scheduled Posts](#scheduled-posts)
+      - [Flair System](#flair-system)
+      - [Event Threads](#event-threads)
+      - [Translation](#translation)
+      - [Auto-Remove Duplicate Links with Different Query Parameters](#auto-remove-duplicate-links-with-different-query-parameters)
+      - [Limit Submissions to 5 a day](#limit-submissions-to-5-a-day)
+      - [Auto-Flairing](#auto-flairing)
 - [Related](#related)
   - [Source Control](#source-control)
   - [Static Typing](#static-typing)
@@ -198,48 +201,51 @@ Some snoowrap typings are wrong.
 These are things we need help with right now. Note that we aren't limiting contributions to this list - if you have an idea for RSGBot, open an issue and tell us more. 
 
 #### Infrastructure
-##### WIP (@JeremyTCD) Access Token Retrieval App
-The C# library we used for the existing bot, [Reddit.Net](https://github.com/sirkris/Reddit.NET#solution-projects), came with a [utility for retrieving access tokens](https://www.youtube.com/watch?v=xlWhLyVgN2s).
-Unfortunately it requires Visual Studio and some familiarity with .Net to run. Would be useful to reproduce such a utility in this repository.
+
+##### Testing
+TODO
+
+##### Error Handling
+TODO
+
+##### CI
+TODO
 
 #### Shared
-##### TODO `IMessageFeature`
-Polls private messages.
-
-##### TODO `CommandParser`
+##### `CommandParser`
 See src/shared/CommandParser for details. Most features will expose commands to users, a shared command parser will save us all time and ensure consistency. 
 Could try a library if anyone has suggestions.
 
-##### TODO `Logger`
+##### `Logger`
 See src/shared/Logger for details. Need some way to store and expose logs so devs can monitor their features.
 
-##### TODO Add MongoDB
+##### MongoDB Client
 So we hit the Reddit API less. Things like when a users account was created can be stored in MongoDB.
 
 #### Features
-##### TODO Schedules Posts
+##### Scheduled Posts
 Private message command to shedule posts.
 
-##### TODO Flair System
+##### Flair System
 Replicate [existing system](https://www.reddit.com/r/singapore/comments/hpikf7/level_system_trial_2/). Try determining user's first activity on
 r/Singapore using Pushshift.
 
-##### TODO Event Threads
+##### Event Threads
 Once a week, create thread in competition mode, pin it. After 24 hours, identify winners (authors of comments with top 3 most upvotes).
 Ask them for a short blurb. Add blurbs to sidebar for a week. Assign special winner emojis to winners.
 
-##### TODO Translation
+##### Translation
 Requested by r/Singapore mods. Suggested commands: `!translate <text>` to translate a block of text, `!translate` to translate an entire comment or post. 
 Suggested API - [Google translate](https://github.com/googleapis/nodejs-translate). Up to you to design the feature though. 
 
-##### TODO Auto-Remove Duplicate Links with Different Query Parameters
+##### Auto-Remove Duplicate Links with Different Query Parameters
 Requested by r/Singapore mods. Right now "google.com?user=1" and "google.com?user=2" aren't considered duplicates by reddit's built in bot.
 Mods want such duplicates removed, but they want youtube timestamped links excluded.
 
-##### TODO Limit Submissions to 5 a day
+##### Limit Submissions to 5 a day
 Requested by r/Singapore mods.
 
-##### TODO Auto-Flairing
+##### Auto-Flairing
 Use ML to detect post category, flair accordingly.
 
 ## Related
