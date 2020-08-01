@@ -1,3 +1,3 @@
 export default interface ILogger{
-    log(featureName: string, message: string): Promise<void>;
+    log(tag: string, message: string): Promise<void>;
 }

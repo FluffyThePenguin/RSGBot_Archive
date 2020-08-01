@@ -1,7 +1,7 @@
 import ILogger from "./ILogger";
 
 export default class Logger implements ILogger {
-    public async log(featureName: string, message: string): Promise<void> {
+    public async log(tag: string, message: string): Promise<void> {
         // TODO 
         // - Multiple features will run concurrently.
         // - In development/debug mode, we write logs to the console. In production, we need some way for devs to monitor 
@@ -9,7 +9,6 @@ export default class Logger implements ILogger {
         // - Heroku allows multiple devs to view logs at the same time, but doesn't seem to offer filtering. Also log history is quite limited.
         // - We should try and pass logs on to some log aggregating service like google cloud logging https://cloud.google.com/logging/docs.
 
-        console.log(`[${featureName}]: ${message}`);
+        console.log(`[${tag}]: ${message}`);
     }
-
 }

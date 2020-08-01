@@ -25,16 +25,16 @@ if (clientID == null || clientSecret == null || refreshToken == null) {
 
             onAuthorized();
         });
-}else{
+} else {
     onAuthorized();
 }
 
 function onAuthorized() {
-    // Get configuration
+    // Get configuration values
     const mode = process.env.RSGBOT_ENV === 'production' ? Mode.production : Mode.development;
     const subreddit = process.env.SUBREDDIT ?? 'RSGBot';
 
-    // Register services
+    // Register shared services
     container.registerInstance(Configuration, new Configuration(mode, subreddit));
     container.registerInstance(snoowrap, new snoowrap({
         userAgent: 'RSGBot v0.1',
@@ -45,11 +45,16 @@ function onAuthorized() {
     container.register('ICommandParser', CommandParser);
     container.register('ILogger', Logger);
 
-    // Register a feature
-    // - Register your feature for interfaces it implements. Note that ICommentFeature and ISubmissionFeature both implement IFeature.
-    container.register('IFeature', ExampleFeature);
-    container.register('ICommentFeature', ExampleFeature);
-    container.register('ISubmissionFeature', ExampleFeature);
+    // Register features. Note that ICommentFeature, ISubmissionFeature and IPrivateMessageFeature all implement IFeature.
+    // Register your feature in the development block while developing. Register in the production block when you're ready to merge into master.
+    if (mode === Mode.development) {
+        container.register('IFeature', ExampleFeature);
+        container.register('ICommentFeature', ExampleFeature);
+        container.register('ISubmissionFeature', ExampleFeature);
+        container.register('IPrivateMessageFeature', ExampleFeature);
+    } else {
+        // Production features
+    }
 
     // Start application
     const application = container.resolve(Application);

@@ -32,7 +32,7 @@ class Authorizer {
         console.log(`Starting authorization...\n`);
 
         // Step 1 - Log in
-        await this.question("1. Log in to Reddit in your browser. Press enter when done.");
+        await this.question("1. Log in to Reddit in your browser (we recommend using an alt account). Press enter when done.");
 
         // Step 2 - Create app
         await open(this._createAppUrl);
