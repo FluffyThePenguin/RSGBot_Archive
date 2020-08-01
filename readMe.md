@@ -13,7 +13,7 @@ r/Singapore's community building bot.
     - [Typescript/Snoowrap await Issue](#typescriptsnoowrap-await-issue)
     - [Snoowrap typings issue](#snoowrap-typings-issue)
   - [Things To Do](#things-to-do)
-    - [Infrastructure]
+    - [Infrastructure](#infrastructure)
       - [Testing](#testing)
       - [Error Handling](#error-handling)
       - [CI](#ci)
