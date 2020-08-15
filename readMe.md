@@ -270,24 +270,26 @@ TODO MongoDB
 ### Unit Testing
 #### Overview
 Our unit tests are function scoped. Style-wise, they're "pure"/"mockist". This means we mock all dependencies and verify that we pass expected arguments.
-For example, if function `doSomething` calls `Logger.log(message)`, we mock `Logger.log` and verify that we pass it the expected message.
+For example, if function `doSomething` calls `Logger.log(message)`, we mock `Logger.log` and verify that it receives the expected message.
 
 Why pure unit tests?
 
 - This project is heavily dependent on remote APIs. We must mock dependencies that call remote APIs to avoid onerous setup (maintaining API keys etc) and susceptibility to intermittent network issues.  
-- Dependencies that don't call remote APIs may do so down the line. E.g. `Logger.log` might only write to console for now, eventually it might push info to a remote log storage service.
+- Dependencies that don't call remote APIs may do so down the line. E.g. `Logger.log` only writes to console for now, eventually it might push info to a remote logging service.
 - It may not always be clear to contributors whether a dependency calls remote APIs.
+- Mocking all dependencies means unit tests do not touch logic in other classes. This eliminates the question of whether it is logic in the function under test or a dependency that is broken, making it eaier to pinpoint the root cause of a failure. The clear delineation of unit test boundaries is especially useful for us since
+this project is open source - contributors typically aren't going to be familiar with every aspect of the project.
 - Having everyone mock all dependencies keeps things simple and consistent.
-- Also, mocking all dependencies means our unit tests do not touch logic in other classes. This makes it easier to pin-point a failure's root problem; open source contributors,
-typically aren't going to be familiar with every aspect of the project. Better not to leave them wondering if it is logic in the function under test or a dependency that is broken.
 
 #### Writing Unit Tests
-We use a single framework, [Jest](https://jestjs.io/en/), to run tests, mock, and assert. Refer to Jest's [documentation](https://jestjs.io/docs/en/getting-started.html) for an introduction. Test files are located in the `<project root>/test` directory. File structure in the directory is the same as in `<project root>/src`.  
+We use [Jest](https://jestjs.io/en/) to run tests, mock, and assert. Refer to Jest's [documentation](https://jestjs.io/docs/en/getting-started.html) for details on the framework.  
 
-In the example below, we provide basic tips. We don't cover everything, so we highly recommend looking through Jest's documentation.  
+Test files are located in the `<project root>/test` directory. File structure in the directory is the same as in `<project root>/src`.  
+
+In the example below, we provide basic Jest tips. We highly recommend looking through Jest's documentation for the full picture.  
 
 ##### Example
-The following code is extracted from [./src/features/exampleFeature/ExampleFeature.ts](./src/features/exampleFeature/ExampleFeature.ts) and [./test/features/exampleFeature/ExampleFeature.test.ts](./test/features/exampleFeature/ExampleFeature.tests.ts).  
+The following code is extracted from [ExampleFeature.ts](./src/features/exampleFeature/ExampleFeature.ts) and [ExampleFeature.test.ts](./test/features/exampleFeature/ExampleFeature.test.ts).  
 
 We're going to look at the example test for `ExampleFeature.onComment`:  
 
@@ -309,7 +311,7 @@ export default class ExampleFeature implements ICommentFeature, ISubmissionFeatu
 }
 ```
 
-The test. It's slightly contrived for clarity, see comments beginning with "Note:":
+The test is slightly contrived to illustrate test structure. Take note of comments beginning with "Note:":
 
 ```ts
 ...
