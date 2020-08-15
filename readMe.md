@@ -268,9 +268,121 @@ TODO OAuth 2.0
 TODO Basics
 TODO MongoDB
 ### Unit Testing
-TODO unit tests
-TODO mocking
-TODO jest
+#### Overview
+Our unit tests are function scoped. Style-wise, they're "pure"/"mockist". This means we mock all dependencies and verify that we pass expected arguments.
+For example, if function `doSomething` calls `Logger.log(message)`, we mock `Logger.log` and verify that we pass it the expected message.
+
+Why pure unit tests?
+
+- This project is heavily dependent on remote APIs. We must mock dependencies that call remote APIs to avoid onerous setup (maintaining API keys etc) and susceptibility to intermittent network issues.  
+- Dependencies that don't call remote APIs may do so down the line. E.g. `Logger.log` might only write to console for now, eventually it might push info to a remote log storage service.
+- It may not always be clear to contributors whether a dependency calls remote APIs.
+- Having everyone mock all dependencies keeps things simple and consistent.
+- Also, mocking all dependencies means our unit tests do not touch logic in other classes. This makes it easier to pin-point a failure's root problem; open source contributors,
+typically aren't going to be familiar with every aspect of the project. Better not to leave them wondering if it is logic in the function under test or a dependency that is broken.
+
+#### Writing Unit Tests
+We use a single framework, [Jest](https://jestjs.io/en/), to run tests, mock, and assert. Refer to Jest's [documentation](https://jestjs.io/docs/en/getting-started.html) for an introduction. Test files are located in the `<project root>/test` directory. File structure in the directory is the same as in `<project root>/src`.  
+
+In the example below, we provide basic tips. We don't cover everything, so we highly recommend looking through Jest's documentation.  
+
+##### Example
+The following code is extracted from [./src/features/exampleFeature/ExampleFeature.ts](./src/features/exampleFeature/ExampleFeature.ts) and [./test/features/exampleFeature/ExampleFeature.test.ts](./test/features/exampleFeature/ExampleFeature.tests.ts).  
+
+We're going to look at the example test for `ExampleFeature.onComment`:  
+
+```ts
+...
+
+@injectable()
+export default class ExampleFeature implements ICommentFeature, ISubmissionFeature, IPrivateMessageFeature {
+    constructor(@inject('ILogger') private readonly _logger: ILogger) { }
+
+    public async onComment(comment: Comment, command: Command): Promise<void> {
+        this._logger.log('ExampleFeature', `onComment, author: ${comment.author.name}, comment body: ${comment.body}`);
+
+        //@ts-ignore
+        await comment.reply(`echo: ${comment.body}`);
+    }
+
+    ...
+}
+```
+
+The test. It's slightly contrived for clarity, see comments beginning with "Note:":
+
+```ts
+...
+
+import { mocked } from "ts-jest/utils";
+import ExampleFeature from "../../../src/features/exampleFeature/ExampleFeature";
+import Logger from "../../../src/shared/Logger";
+import Comment from "snoowrap/dist/objects/Comment";
+import RedditUser from "snoowrap/dist/objects/RedditUser";
+
+// Note: jest.mock(modulePath) calls are hoisted above import statements. They replace module exports with "automatic mocks".
+// Automatic mocks have the same surface areas as original exports, but all their functions are Jest "mock functions".
+// Jest "mock functions" always return undefined and have an extra property, "mock", which stores their call history.
+// With the following lines, when we import Logger, Comment and RedditUser, we get automatic mocks instead. Note
+// that all three are classes - their construtor functions also get replaced by Jest.
+jest.mock("../../../src/shared/Logger");
+jest.mock("snoowrap/dist/objects/Comment");
+jest.mock("snoowrap/dist/objects/RedditUser");
+...
+
+// Note: describe is used to group tests. For simplicity and consistency, use one describe per function. The describe's name should be the function's name.
+// This helps with test result formatting and shared setup/teardown.
+describe('onComment', () => {
+    // Note: Test names should be verbs.
+    test('logs comment details and replies', async () => {
+        // Arrange
+        const dummyAuthorName = 'dummyAuthorName';
+        const dummyBody = 'dummyBody';
+
+        const mockRedditUser = new RedditUser(null, null, null); // Note: As mentioned before, RedditUser's constructor function gets replaced. If we didn't mock RedditUser, 
+                                                                 // we'd get errors because the original implementation doesn't accept null arguments. Same for Comment.
+        mockRedditUser.name = dummyAuthorName;
+        
+        const mockComment = new Comment(null, null, null);
+        mockComment.author = mockRedditUser;
+        mockComment.body = dummyBody;
+
+        const mockLogger = new Logger();
+
+        const testSubject = new ExampleFeature(mockLogger);
+
+        // Act
+        await testSubject.onComment(mockComment, null);
+
+        // Assert
+        const mockLoggerTyped = mocked(mockLogger); // Note: Typescript has no way to know that mockLogger is an automatic mock. This helper method adds automatic mock typings
+                                                    // to fix that.
+        expect(mockLoggerTyped.log.mock.calls).toHaveLength(1); // Note: Here we can access mock in a typesafe manner because of mocked(mockLogger).
+        expect(mockLoggerTyped.log.mock.calls[0][0]).toEqual('ExampleFeature');
+        expect(mockLoggerTyped.log.mock.calls[0][1]).toEqual(`onComment, author: ${dummyAuthorName}, comment body: ${dummyBody}`);
+
+        const mockCommentTyped = mocked(mockComment);
+        expect(mockCommentTyped.reply.mock.calls).toHaveLength(1);
+        expect(mockCommentTyped.reply.mock.calls[0][0]).toEqual(`echo: ${dummyBody}`);
+    });
+});
+
+...
+```
+
+##### Running Tests
+- In Visual Studio Code, navigate to the "Run" view (bug and play icon on the leftmost bar). Select "Debug Jest Tests" in the drop-down. Press ctrl + f5 or from 
+the top horizontal menu, Run > Run Without Debugging. You'll need to have your terminal open to see test output. Or  
+
+- `yarn run test`.
+
+##### Debugging Tests
+- In Visual Studio Code, navigate to the "Run" view (bug and play icon on the leftmost bar). Select "Debug Jest Tests" in the drop-down. Press f5 or from 
+the top horizontal menu, Run > Start Debugging. Or  
+
+- `yarn run debug-tests`, navigate to "chrome://inspect" in Chrome, click "Open dedicated DevTools for Node". Note, break points don't work if you use Chrome, so you'll
+have to use `debugger`.
+
 ### Dependency Injection
 TODO Basics
 TODO tsyringe

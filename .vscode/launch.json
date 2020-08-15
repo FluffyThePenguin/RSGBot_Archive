@@ -5,19 +5,35 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Program",
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
             "skipFiles": [
                 // "node_modules/**/*.js", // Uncomment to prevent stepping into dependencies
                 "<node_internals>/**/*.js" // TODO not working
             ],
             "program": "${workspaceFolder}/src/index.ts",
             "preLaunchTask": "tsc: build - tsconfig.json",
-            "outputCapture": "all",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ]
-        }
+        },
+        {
+            "name": "Debug Jest Tests",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": [
+              "--inspect-brk",
+              "${workspaceRoot}/node_modules/jest/bin/jest.js",
+              "--runInBand"
+            ],
+            "skipFiles": [
+                // "node_modules/**/*.js", // Uncomment to prevent stepping into dependencies
+                "<node_internals>/**/*.js" // TODO not working
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "port": 9229
+          }
     ]
 }

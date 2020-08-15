@@ -1,15 +1,14 @@
-import snoowrap, { PrivateMessage, Comment, Submission } from "snoowrap";
+import { Comment, PrivateMessage, Submission } from "snoowrap";
 import { inject, injectable } from "tsyringe";
 import Command from "../../shared/Command";
 import ICommentFeature from "../../shared/ICommentFeature";
 import ILogger from "../../shared/ILogger";
-import ISubmissionFeature from "../../shared/ISubmissionFeature";
 import IPrivateMessageFeature from "../../shared/IPrivateMessageFeature";
+import ISubmissionFeature from "../../shared/ISubmissionFeature";
 
 @injectable()
 export default class ExampleFeature implements ICommentFeature, ISubmissionFeature, IPrivateMessageFeature {
-    constructor(@inject('ILogger') private readonly _logger: ILogger,
-        private readonly _snoowrap: snoowrap) { }
+    constructor(@inject('ILogger') private readonly _logger: ILogger) { }
 
     public async onComment(comment: Comment, command: Command): Promise<void> {
         this._logger.log('ExampleFeature', `onComment, author: ${comment.author.name}, comment body: ${comment.body}`);
@@ -19,7 +18,7 @@ export default class ExampleFeature implements ICommentFeature, ISubmissionFeatu
     }
 
     public async onSubmission(submission: Submission): Promise<void> {
-        this._logger.log('ExampleFeature', `onSubmission, author: ${submission.author.name}, submission body: ${submission.title}`);
+        this._logger.log('ExampleFeature', `onSubmission, author: ${submission.author.name}, submission title: ${submission.title}`);
 
         //@ts-ignore
         await submission.reply(`echo: ${submission.title}`);
@@ -33,6 +32,6 @@ export default class ExampleFeature implements ICommentFeature, ISubmissionFeatu
     }
 
     public async onInit(): Promise<void> {
-        this._logger.log('ExampleFeature', `onInit`);
+        this._logger.log('ExampleFeature', 'onInit');
     }
 }
