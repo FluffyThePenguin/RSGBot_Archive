@@ -7,14 +7,16 @@ r/Singapore's community building bot.
 - [Contributing](#contributing)
   - [Getting Started](#getting-started)
   - [Contributing a Feature](#contributing-a-feature)
+  - [Contributing Infrastructural/Shared Logic](#contributing-infrastructuralshared-logic)
   - [Tips](#tips)
+    - [Typescript Version](#typescript-version)
     - [Debugging](#debugging)
+    - [Reddit API Authorization](#reddit-api-authorization)
     - [VSC Codebase Navigation](#vsc-codebase-navigation)
     - [Typescript/Snoowrap await Issue](#typescriptsnoowrap-await-issue)
-    - [Snoowrap typings issue](#snoowrap-typings-issue)
+    - [Snoowrap typings issues](#snoowrap-typings-issues)
   - [Things To Do](#things-to-do)
     - [Infrastructure](#infrastructure)
-      - [Testing](#testing)
       - [Error Handling](#error-handling)
       - [CI](#ci)
     - [Shared](#shared)
@@ -41,16 +43,16 @@ r/Singapore's community building bot.
 
 ## Overview
 
-This readme is an early draft, we'll clean it up and flesh it out over the next few weekends.
+This readme is an early draft, we will clean it up and flesh it out over the next few weekends.
 
 The codebase is also an early draft. Let us know if you face issues getting started with the bot or if you know better ways to do things.
-For now, it's public for early experimenters to tinker with.  
+For now, it is public for early experimenters to tinker with.  
 
 Post suggestions/questions over in our [getting started](https://github.com/RSGTechSupport/RSGBot/issues/1) thread.
 
-> Things we need help with are listed in ["things to do"](https://github.com/RSGTechSupport/RSGBot/#things-to-do).  
->   
-> Contributors get access to an exclusive flair on reddit. They also get their names listed here alongside a description of what they've contributed.
+Things we need help with are listed in [here](#things-to-do).  
+
+Contributors get access to an exclusive flair on r/Singapore. They also get their names listed here alongside a description of what they have contributed.
 
 ## Contributing
 ### Getting Started
@@ -59,12 +61,12 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
 2. Install [yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable).
 3. [Fork this repository](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo).
 4. [Clone your fork](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
-5. Open the root folder of the clone in vsc.
+5. Open the root folder of your clone in vsc.
 6. Open vsc's [integrated terminal](https://code.visualstudio.com/docs/editor/integrated-terminal).
 7. Install dependencies: `yarn install`.
-8. Start the bot: `yarn run dev` (refer to [Typescript Version](#typescript-version) if you get errors, [create an issue](https://github.com/RSGTechSupport/RSGBot/issues/new/choose) if errors persist).  
-   If it's your first time starting the bot, you'll be guided through authorizing the bot to use your account during development.
-   After authorizing, you'll see output like this:
+8. Start the bot: `yarn run dev` (refer to [Typescript Version](#typescript-version) if you get compilation errors, [create an issue](https://github.com/RSGTechSupport/RSGBot/issues/new/choose) if errors persist).  
+   If it is your first time starting the bot, you will be guided through authorizing a Reddit acount for the bot to use during development.
+   After authorizing, you will see output like this:
     ```
     yarn run v1.12.3
     $ set RSGBOT_ENV=development && nodemon ./src/index.ts
@@ -73,87 +75,109 @@ Post suggestions/questions over in our [getting started](https://github.com/RSGT
     [nodemon] watching path(s): *.*
     [nodemon] watching extensions: ts,json
     [nodemon] starting `ts-node ./src/index.ts`
-    [Application]: Poll comments: true
-    [Application]: Poll submissions: true
+    [ApplicationInitialization]: Polling comments
+    [ApplicationInitialization]: Polling submissions     
+    [ApplicationInitialization]: Polling private messages
+    [ApplicationInitialization]: Bot username: RSGBot
+    [ApplicationInitialization]: Latest comment fullname: t1_g0ryajf
+    [ApplicationInitialization]: Latest submission fullname: t3_i5vyt3
+    [ApplicationInitialization]: Latest message fullname: t4_qheaga
     [ExampleFeature]: onInit
-    [Application]: Bot username: RSGBot
-    [Application]: Latest comment fullname: t1_fyfqmt2
-    [Application]: Latest submission fullname: t3_htb1ai
-    [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htb1ai
+    [Application]: Retrieving comments before: t1_g0ryajf, submissions before: t3_i5vyt3 and messages before: t4_qheaga
     [Application]: No new comments
     [Application]: No new submissions
-    [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htb1ai
+    [Application]: No new messages   
+    [Application]: Retrieving comments before: t1_g0ryajf, submissions before: t3_i5vyt3 and messages before: t4_qheaga
     [Application]: No new comments
     [Application]: No new submissions
+    [Application]: No new messages   
     ```
       - `nodemon` restarts the application when you save changes.
       - The Reddit API terms chronologically ordered lists of "things" (comments/posts etc) ["listings"](https://www.reddit.com/dev/api/#listings). When we retrieve from a listing, we specify 
-      that we only want things posted after the last thing we processed, e.g. comments posted after the last comment we processed. Things are specified using ["fullnames"](https://www.reddit.com/dev/api/#fullnames), e.g. `t1_fyfqmt2`.
-      Above you'll notice our use of fullnames to specify what we want to retrieve. Note that the Reddit API refers to "chronologically after" as before, i.e. if thing *a* was posted after (chronologically) thing *b*,
+      that we only want things posted after the last thing we processed, e.g. comments posted after the last comment we processed. Things are specified using ["fullnames"](https://www.reddit.com/dev/api/#fullnames), e.g. `t1_g0ryajf`.
+      Above you will notice our use of fullnames to specify what we want to retrieve. Note that the Reddit API refers to "chronologically after" as before, i.e. if thing *a* was posted after (chronologically) thing *b*,
       thing *a* is before thing *b* in the listing. 
 9. Navigate to [r/RSGBot](https://www.reddit.com/r/RSGBot). This is our test subreddit. In development mode, the bot is configured to poll it. Post a comment or submission there to verify that your bot polls properly:
     ```
-    [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htb1ai
+    [Application]: Retrieving comments before: t1_g0ryajf, submissions before: t3_i5vyt3 and messages before: t4_qheaga
     [Application]: No new comments
     [Application]: 1 new submissions found
-    [ExampleFeature]: onSubmission, submission body: hello there
-    [Application]: Retrieving comments before: t1_fyfqmt2 and submissions before: t3_htex19
-    [Application]: 1 new comments found
+    [ExampleFeature]: onSubmission, author: jtcd, submission title: test
+    [Application]: No new messages
     ```
-      - `ExampleFeature` echos comments/submissions. You should see replies from your bot.
+      - `ExampleFeature` echos comments/submissions. You should see replies from your bot on Reddit.
 
 ### Contributing a Feature
-Features are things like auto-flairing of posts, removal of duplicate posts,
-commands in comments like `!translate` etc.
+"Features" are user facing functionality like auto-flairing of posts, removal of duplicate posts,
+translating comments etc.
 
-TODO document interfaces, shared types
-TODO document testing, add example tests
-
-1. First take a quick look at `ExampleFeature`. In vsc, open `src/features/exampleFeature/ExampleFeature.ts`:
+1. First take a look at [ExampleFeature.ts](./src/features/exampleFeature/ExampleFeature.ts). In vsc, open `<project root>/src/features/exampleFeature/ExampleFeature.ts`:
     ```typescript
-    import ICommentFeature from "../../shared/ICommentFeature";
-    import ISubmissionFeature from "../../shared/ISubmissionFeature";
-    import snoowrap from "snoowrap";
+    import { Comment, PrivateMessage, Submission } from "snoowrap";
+    import { inject, injectable } from "tsyringe";
     import Command from "../../shared/Command";
-    import Logger from "../../shared/ILogger";
-    import {injectable} from "tsyringe";
+    import ICommentFeature from "../../shared/ICommentFeature";
+    import ILogger from "../../shared/ILogger";
+    import IPrivateMessageFeature from "../../shared/IPrivateMessageFeature";
+    import ISubmissionFeature from "../../shared/ISubmissionFeature";
 
     @injectable()
-    export default class ExampleFeature implements ICommentFeature, ISubmissionFeature {
-        constructor(private readonly _logger: Logger, private readonly _snoowrap: snoowrap) { }
+    export default class ExampleFeature implements ICommentFeature, ISubmissionFeature, IPrivateMessageFeature {
+        constructor(@inject('ILogger') private readonly _logger: ILogger) { }
 
-        public async onComment(comment: snoowrap.Comment, command: Command): Promise<void> {
-            ...
+        public async onComment(comment: Comment, command: Command): Promise<void> {
+            this._logger.log('ExampleFeature', `onComment, author: ${comment.author.name}, comment body: ${comment.body}`);
+
+            //@ts-ignore
+            await comment.reply(`echo: ${comment.body}`);
         }
 
-        public async onSubmission(submission: snoowrap.Submission): Promise<void> {
-            ...
+        public async onSubmission(submission: Submission): Promise<void> {
+            this._logger.log('ExampleFeature', `onSubmission, author: ${submission.author.name}, submission title: ${submission.title}`);
+
+            //@ts-ignore
+            await submission.reply(`echo: ${submission.title}`);
+        }
+
+        public async onPrivateMessage(privateMessage: PrivateMessage, command: Command): Promise<void> {
+            this._logger.log('ExampleFeature', `onPrivateMessage, author: ${privateMessage.author.name}, private message body: ${privateMessage.body}`);
+
+            //@ts-ignore
+            await privateMessage.reply(`echo: ${privateMessage.body}`);
         }
 
         public async onInit(): Promise<void> {
-            ...
+            this._logger.log('ExampleFeature', 'onInit');
         }
     }
     ```
-      - It implements `ICommentFeature.onComment` and `ISubmissionFeature.onSubmission` to react to new comments and submissions. 
+      - It implements `ICommentFeature.onComment`, `ISubmissionFeature.onSubmission` and `IPrivateMessageFeature.onPrivateMessage` to react to comments, submissions and private messages. 
       - It does nothing in `IFeature.onInit`. Other features might use this method to register proactive events, e.g. logic to create a meme competition thread at the same time every week.
-      - `_snoowrap` is the Reddit API wrapper. [snoowrap repository](https://github.com/not-an-aardvark/snoowrap).
 2. Create a new git branch: `git checkout -b add_<feature_name>`.
 3. Add a new folder under src/features or copy the `src/features/exampleFeature` folder.
-4. Implement onComment/onSubmission/onInit in your feature.
-5. Register your feature in `index.ts`, this is how `ExampleFeature` is registered:
-   ```typescript
-   // Register a feature
-   // - Register your feature for interfaces it implements. Note that ICommentFeature and ISubmissionFeature both implement IFeature.
-   container.register('IFeature', ExampleFeature);
-   container.register('ICommentFeature', ExampleFeature);
-   container.register('ISubmissionFeature', ExampleFeature);
-   ```
+4. Implement onComment/onSubmission/onPrivateMessage/onInit in your feature.
+5. Write [unit tests](#unit-testing).
+5. Register your feature in [index.ts](./src/index.ts). This is how `ExampleFeature` is registered:
+    ```typescript
+    // Register a feature
+    // - Register your feature for interfaces it implements. Note that ICommentFeature, ISubmissionFeature and IPrivateMessage feature
+    //   all implement IFeature.
+    container.register('IFeature', ExampleFeature);
+    container.register('ICommentFeature', ExampleFeature);
+    container.register('ISubmissionFeature', ExampleFeature);
+    container.register('IPrivateMessageFeature', ExampleFeature);
+    ```
 6. [Create a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+
+TODO document interfaces, shared types  
+
+### Contributing Infrastructural/Shared Logic
+
+TODO
 
 ### Tips
 #### Typescript Version
-This project includes TypeScript 3.9.7 as a dependency. If you've already installed TypeScript on your machine, vsc uses that for type checking.
+This project includes TypeScript 3.9.7 as a dependency. If you have already installed TypeScript on your machine, vsc uses your installed version for type checking.
 This might be an issue if your installed version is old.
 
 To use the included TypesScript version: 
@@ -172,38 +196,34 @@ TODO vsc steps into node internals despite
 ],
 ```
 
-in `.vscode/launch.json`. You'll notice yourself stepping through files in the `<node_internals>` directory (hover over tab of open file to see it's path).
+in `.vscode/launch.json`. You will notice yourself stepping through files in the `<node_internals>` directory (hover over tab of open file to see it is path).
 For now, set a breakpoint in your code after the internals and click continue to skip all that.
 
 #### Reddit API Authorization
-The first time you start the bot, you go through an authorization process. Check out [Reddit's documentation](https://github.com/reddit-archive/reddit/wiki/oauth2) 
-for details on this process.
+The first time you start the bot, you go through an authorization process. If you would like to understand what the bot is doing, check out [Reddit is documentation](https://github.com/reddit-archive/reddit/wiki/oauth2) on authorization.
 
 #### VSC Codebase Navigation
 Press `f1` to go to definition. This is a good way to figure out what arguments a snoowrap method takes.
 
 #### Typescript/Snoowrap await Issue
-Awaiting some snoowrap methods causes typescript error 1062.
+Awaiting some snoowrap methods causes typescript error TS1062.
 
 This is a known issue:
   - https://github.com/not-an-aardvark/snoowrap/issues/221
   - https://github.com/DefinitelyTyped/DefinitelyTyped/issues/33139
 
-We've verified that the underlying code is safe. If you encounter 1062, add `//@ts-ignore` above the line.
+We have verified that the underlying code is safe. If you encounter TS1062, add `//@ts-ignore` above the line.
 
-#### Snoowrap typings issue
-TODO open issue on snoowrap
+#### Snoowrap typings issues
+TODO open issues on snoowrap  
 TODO add primer on typescript and typings
 
 Some snoowrap typings are wrong. 
 
 ### Things To Do
-These are things we need help with right now. Note that we aren't limiting contributions to this list - if you have an idea for RSGBot, open an issue and tell us more. 
+These are things we need help with right now. We aren't limiting contributions to this list - if you have an idea for RSGBot, open an issue and tell us more. 
 
 #### Infrastructure
-
-##### Testing
-TODO
 
 ##### Error Handling
 TODO
@@ -239,7 +259,7 @@ Requested by r/Singapore mods. Suggested commands: `!translate <text>` to transl
 Suggested API - [Google translate](https://github.com/googleapis/nodejs-translate). Up to you to design the feature though. 
 
 ##### Auto-Remove Duplicate Links with Different Query Parameters
-Requested by r/Singapore mods. Right now "google.com?user=1" and "google.com?user=2" aren't considered duplicates by reddit's built in bot.
+Requested by r/Singapore mods. Right now "google.com?user=1" and "google.com?user=2" aren't considered duplicates by reddit is built in bot.
 Mods want such duplicates removed, but they want youtube timestamped links excluded.
 
 ##### Limit Submissions to 5 a day
@@ -249,8 +269,8 @@ Requested by r/Singapore mods.
 Use ML to detect post category, flair accordingly.
 
 ## Related
-We'd like this project to be accessible. In this section we touch on concepts and tools
-we've used and provide links to in-depth information.
+We'd like this project to be accessible. In this section we expand on concepts and tools
+we have used and provide links to in-depth information.
 
 ### Source Control
 TODO Basics
@@ -269,29 +289,30 @@ TODO Basics
 TODO MongoDB
 ### Unit Testing
 #### Overview
-Our unit tests are function scoped. Style-wise, they're "pure"/"mockist". This means we mock all dependencies and verify that we pass expected arguments.
-For example, if function `doSomething` calls `Logger.log(message)`, we mock `Logger.log` and verify that it receives the expected message.
+This project's unit tests are function scoped and "pure"/"mockist". This means we mock all of a function's dependencies and verify that expected arguments are passed to them.
+For example, if we are testing function `doSomething()` and it calls `Logger.log(message)`, we mock `Logger.log` and verify that it receives the expected message.
 
 Why pure unit tests?
 
-- This project is heavily dependent on remote APIs. We must mock dependencies that call remote APIs to avoid onerous setup (maintaining API keys etc) and susceptibility to intermittent network issues.  
+- This project depends heavily on remote APIs. By mocking dependencies that call remote APIs we avoid onerous setup (maintaining API keys etc) and susceptibility to intermittent network issues.  
 - Dependencies that don't call remote APIs may do so down the line. E.g. `Logger.log` only writes to console for now, eventually it might push info to a remote logging service.
 - It may not always be clear to contributors whether a dependency calls remote APIs.
-- Mocking all dependencies means unit tests do not touch logic in other classes. This eliminates the question of whether it is logic in the function under test or a dependency that is broken, making it eaier to pinpoint the root cause of a failure. The clear delineation of unit test boundaries is especially useful for us since
-this project is open source - contributors typically aren't going to be familiar with every aspect of the project.
+- Mocking all dependencies means unit tests do not touch logic in other classes. This clear delineation of unit test boundaries is helpful for open source projects like ours - when a failure occurs, contributors
+know for certain the issue is with logic in the function under test, not a dependency that they may not be familiar with.
 - Having everyone mock all dependencies keeps things simple and consistent.
 
 #### Writing Unit Tests
-We use [Jest](https://jestjs.io/en/) to run tests, mock, and assert. Refer to Jest's [documentation](https://jestjs.io/docs/en/getting-started.html) for details on the framework.  
+We use [Jest](https://jestjs.io/en/) for mocking, asserting and running tests. Refer to Jest's [documentation](https://jestjs.io/docs/en/getting-started.html) for details on the framework.  
 
 Test files are located in the `<project root>/test` directory. File structure in the directory is the same as in `<project root>/src`.  
 
-In the example below, we provide basic Jest tips. We highly recommend looking through Jest's documentation for the full picture.  
+We provide an example unit test below to give an idea of how we structure unit tests. We have included some basic Jest tips, we recommend going through their
+documentation for the full picture though.
 
 ##### Example
 The following code is extracted from [ExampleFeature.ts](./src/features/exampleFeature/ExampleFeature.ts) and [ExampleFeature.test.ts](./test/features/exampleFeature/ExampleFeature.test.ts).  
 
-We're going to look at the example test for `ExampleFeature.onComment`:  
+we are going to look at the example test for `ExampleFeature.onComment`:  
 
 ```ts
 ...
@@ -311,7 +332,7 @@ export default class ExampleFeature implements ICommentFeature, ISubmissionFeatu
 }
 ```
 
-The test is slightly contrived to illustrate test structure. Take note of comments beginning with "Note:":
+The test. Take note of comments beginning with "Note:":
 
 ```ts
 ...
@@ -359,13 +380,10 @@ describe('onComment', () => {
         // Assert
         const mockLoggerTyped = mocked(mockLogger); // Note: Typescript has no way to know that mockLogger is an automatic mock. This helper method adds automatic mock typings
                                                     // to fix that.
-        expect(mockLoggerTyped.log.mock.calls).toHaveLength(1); // Note: Here we can access mock in a typesafe manner because of mocked(mockLogger).
-        expect(mockLoggerTyped.log.mock.calls[0][0]).toEqual('ExampleFeature');
-        expect(mockLoggerTyped.log.mock.calls[0][1]).toEqual(`onComment, author: ${dummyAuthorName}, comment body: ${dummyBody}`);
+        expect(mockLoggerTyped.log.mock.calls).toEqual([['ExampleFeature', `onComment, author: ${dummyAuthorName}, comment body: ${dummyBody}`]]);
 
         const mockCommentTyped = mocked(mockComment);
-        expect(mockCommentTyped.reply.mock.calls).toHaveLength(1);
-        expect(mockCommentTyped.reply.mock.calls[0][0]).toEqual(`echo: ${dummyBody}`);
+        expect(mockCommentTyped.reply.mock.calls).toEqual([[`echo: ${dummyBody}`]]);
     });
 });
 
@@ -373,16 +391,20 @@ describe('onComment', () => {
 ```
 
 ##### Running Tests
-- In Visual Studio Code, navigate to the "Run" view (bug and play icon on the leftmost bar). Select "Debug Jest Tests" in the drop-down. Press ctrl + f5 or from 
-the top horizontal menu, Run > Run Without Debugging. You'll need to have your terminal open to see test output. Or  
+###### VSC
+Navigate to the "Run" view (bug and play icon on the leftmost bar). Select "Debug Jest Tests" in the drop-down. Press ctrl + f5 or from 
+the top horizontal menu, Run > Run Without Debugging. You will need to have your terminal open to see test output.
 
-- `yarn run test`.
+###### Command Line
+`yarn run test`.
 
 ##### Debugging Tests
-- In Visual Studio Code, navigate to the "Run" view (bug and play icon on the leftmost bar). Select "Debug Jest Tests" in the drop-down. Press f5 or from 
+###### VSC
+Navigate to the "Run" view (bug and play icon on the leftmost bar). Select "Debug Jest Tests" in the drop-down. Press f5 or from 
 the top horizontal menu, Run > Start Debugging. Or  
 
-- `yarn run debug-tests`, navigate to "chrome://inspect" in Chrome, click "Open dedicated DevTools for Node". Note, break points don't work if you use Chrome, so you'll
+###### Command Line
+`yarn run debug-tests`, navigate to "chrome://inspect" in Chrome, click "Open dedicated DevTools for Node". Note, break points don't work if you use Chrome, so you will
 have to use `debugger`.
 
 ### Dependency Injection

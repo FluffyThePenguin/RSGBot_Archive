@@ -35,13 +35,10 @@ describe('onComment', () => {
 
         // Assert
         const mockLoggerTyped = mocked(mockLogger);
-        expect(mockLoggerTyped.log.mock.calls).toHaveLength(1);
-        expect(mockLoggerTyped.log.mock.calls[0][0]).toEqual('ExampleFeature');
-        expect(mockLoggerTyped.log.mock.calls[0][1]).toEqual(`onComment, author: ${dummyAuthorName}, comment body: ${dummyBody}`);
+        expect(mockLoggerTyped.log.mock.calls).toEqual([['ExampleFeature', `onComment, author: ${dummyAuthorName}, comment body: ${dummyBody}`]]);
 
         const mockCommentTyped = mocked(mockComment);
-        expect(mockCommentTyped.reply.mock.calls).toHaveLength(1);
-        expect(mockCommentTyped.reply.mock.calls[0][0]).toEqual(`echo: ${dummyBody}`);
+        expect(mockCommentTyped.reply.mock.calls).toEqual([[`echo: ${dummyBody}`]]);
     });
 });
 
@@ -67,13 +64,10 @@ describe('onSubmission', () => {
 
         // Assert
         const mockLoggerTyped = mocked(mockLogger);
-        expect(mockLoggerTyped.log.mock.calls).toHaveLength(1);
-        expect(mockLoggerTyped.log.mock.calls[0][0]).toEqual('ExampleFeature');
-        expect(mockLoggerTyped.log.mock.calls[0][1]).toEqual(`onSubmission, author: ${dummyAuthorName}, submission title: ${dummyTitle}`);
+        expect(mockLoggerTyped.log.mock.calls).toEqual([['ExampleFeature', `onSubmission, author: ${dummyAuthorName}, submission title: ${dummyTitle}`]]);
 
         const mockCommentTyped = mocked(mockSubmission);
-        expect(mockCommentTyped.reply.mock.calls).toHaveLength(1);
-        expect(mockCommentTyped.reply.mock.calls[0][0]).toEqual(`echo: ${dummyTitle}`);
+        expect(mockCommentTyped.reply.mock.calls).toEqual([[`echo: ${dummyTitle}`]]);
     });
 });
 
@@ -99,13 +93,10 @@ describe('onPrivateMessage', () => {
 
         // Assert
         const mockLoggerTyped = mocked(mockLogger);
-        expect(mockLoggerTyped.log.mock.calls).toHaveLength(1);
-        expect(mockLoggerTyped.log.mock.calls[0][0]).toEqual('ExampleFeature');
-        expect(mockLoggerTyped.log.mock.calls[0][1]).toEqual(`onPrivateMessage, author: ${dummyAuthorName}, private message body: ${dummyBody}`);
+        expect(mockLoggerTyped.log.mock.calls).toEqual([['ExampleFeature', `onPrivateMessage, author: ${dummyAuthorName}, private message body: ${dummyBody}`]]);
 
         const mockCommentTyped = mocked(mockPrivateMessage);
-        expect(mockCommentTyped.reply.mock.calls).toHaveLength(1);
-        expect(mockCommentTyped.reply.mock.calls[0][0]).toEqual(`echo: ${dummyBody}`);
+        expect(mockCommentTyped.reply.mock.calls).toEqual([[`echo: ${dummyBody}`]]);
     });
 });
 
@@ -120,8 +111,6 @@ describe('onInit', () => {
 
         // Assert
         const mockLoggerTyped = mocked(mockLogger);
-        expect(mockLoggerTyped.log.mock.calls).toHaveLength(1);
-        expect(mockLoggerTyped.log.mock.calls[0][0]).toEqual('ExampleFeature');
-        expect(mockLoggerTyped.log.mock.calls[0][1]).toEqual('onInit');
+        expect(mockLoggerTyped.log.mock.calls).toEqual([['ExampleFeature', 'onInit']]);
     });
 });

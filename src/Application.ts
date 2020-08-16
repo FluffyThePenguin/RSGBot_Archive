@@ -9,6 +9,9 @@ import IPrivateMessageFeature from "./shared/IPrivateMessageFeature";
 import ISubmissionFeature from "./shared/ISubmissionFeature";
 
 // TODO
+// - Comments get skipped some times. Seems it's a Reddit issue - https://github.com/praw-dev/praw/issues/1043. Solution would be to forget about "before"s -
+//   just retreive max number of comments each loop, discard those that've been processed (keep fullnames in memory). This is what Reddit.Net does and what
+//   Praw is considering - https://github.com/praw-dev/praw/pull/1050.
 // - improve poll method efficiency
 //   - Promise.any so all requests in features run concurrently
 // - avoid allocations where possible
