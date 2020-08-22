@@ -1,0 +1,690 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>RSGBot</title>
+	<meta name="description" content="Documentation for RSGBot">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">RSGBot</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>RSGBot</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#rsgbot" id="rsgbot" style="color: inherit; text-decoration: none;">
+					<h1>RSGBot</h1>
+				</a>
+				<p>r/Singapore&#39;s community building bot.</p>
+				<a href="#table-of-contents" id="table-of-contents" style="color: inherit; text-decoration: none;">
+					<h2>Table of Contents</h2>
+				</a>
+				<ul>
+					<li><a href="#overview">Overview</a>  </li>
+					<li><a href="#contributing">Contributing</a><ul>
+							<li><a href="#getting-started">Getting Started</a></li>
+							<li><a href="#contributing-a-feature">Contributing a Feature</a></li>
+							<li><a href="#contributing-infrastructuralshared-logic">Contributing Infrastructural/Shared Logic</a></li>
+							<li><a href="#tips">Tips</a><ul>
+									<li><a href="#typescript-version">Typescript Version</a></li>
+									<li><a href="#debugging">Debugging</a></li>
+									<li><a href="#reddit-api-authorization">Reddit API Authorization</a></li>
+									<li><a href="#vsc-codebase-navigation">VSC Codebase Navigation</a></li>
+									<li><a href="#typescriptsnoowrap-await-issue">Typescript/Snoowrap await Issue</a></li>
+									<li><a href="#snoowrap-typings-issues">Snoowrap typings issues</a></li>
+								</ul>
+							</li>
+							<li><a href="#things-to-do">Things To Do</a><ul>
+									<li><a href="#infrastructure">Infrastructure</a><ul>
+											<li><a href="#error-handling">Error Handling</a></li>
+											<li><a href="#ci">CI</a></li>
+										</ul>
+									</li>
+									<li><a href="#shared">Shared</a><ul>
+											<li><a href="#commandparser">CommandParser</a></li>
+											<li><a href="#logger">Logger</a></li>
+											<li><a href="#mongodb-client">MongoDB Client</a></li>
+										</ul>
+									</li>
+									<li><a href="#features">Features</a><ul>
+											<li><a href="#scheduled-posts">Scheduled Posts</a></li>
+											<li><a href="#flair-system">Flair System</a></li>
+											<li><a href="#event-threads">Event Threads</a></li>
+											<li><a href="#translation">Translation</a></li>
+											<li><a href="#auto-remove-duplicate-links-with-different-query-parameters">Auto-Remove Duplicate Links with Different Query Parameters</a></li>
+											<li><a href="#limit-submissions-to-5-a-day">Limit Submissions to 5 a day</a></li>
+											<li><a href="#auto-flairing">Auto-Flairing</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li><a href="#concepts">Concepts</a><ul>
+							<li><a href="#unit-testing">Unit Testing</a></li>
+							<li><a href="#documenting">Documenting</a></li>
+							<li><a href="#source-control">Source Control</a></li>
+							<li><a href="#static-typing">Static Typing</a></li>
+							<li><a href="#package-management">Package Management</a></li>
+							<li><a href="#authorization-and-oauth-20">Authorization and OAuth 2.0</a></li>
+							<li><a href="#nosql-databases">NoSQL Databases</a></li>
+							<li><a href="#dependency-injection">Dependency Injection</a></li>
+							<li><a href="#asynchrony">Asynchrony</a></li>
+						</ul>
+					</li>
+				</ul>
+				<a href="#overview" id="overview" style="color: inherit; text-decoration: none;">
+					<h2>Overview</h2>
+				</a>
+				<p>This readme is an early draft, we will clean it up and flesh it out over the next few weekends.</p>
+				<p>The codebase is also an early draft. Let us know if you face issues getting started with the bot or if you know better ways to do things.
+				For now, it is public for early experimenters to tinker with.  </p>
+				<p>Post suggestions/questions over in our <a href="https://github.com/RSGTechSupport/RSGBot/issues/1">getting started</a> thread.</p>
+				<p>Things we need help with are listed in <a href="#things-to-do">here</a>.  </p>
+				<p>Contributors get access to an exclusive flair on r/Singapore. They also get their names listed here alongside a description of what they have contributed.</p>
+				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+					<h2>Contributing</h2>
+				</a>
+				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
+					<h3>Getting Started</h3>
+				</a>
+				<ol>
+					<li>Install <a href="https://code.visualstudio.com/download">visual studio code (vsc)</a>.</li>
+					<li>Install <a href="https://classic.yarnpkg.com/en/docs/install/#windows-stable">yarn</a>.</li>
+					<li><a href="https://docs.github.com/en/github/getting-started-with-github/fork-a-repo">Fork this repository</a>.</li>
+					<li><a href="https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository">Clone your fork</a>.</li>
+					<li>Open the root folder of your clone in vsc.</li>
+					<li>Open vsc&#39;s <a href="https://code.visualstudio.com/docs/editor/integrated-terminal">integrated terminal</a>.</li>
+					<li>Install dependencies: <code>yarn install</code>.</li>
+					<li>Start the bot: <code>yarn run dev</code> (refer to <a href="#typescript-version">Typescript Version</a> if you get compilation errors, <a href="https://github.com/RSGTechSupport/RSGBot/issues/new/choose">create an issue</a> if errors persist).<br>If it is your first time starting the bot, you will be guided through authorizing a Reddit acount for the bot to use during development.
+						After authorizing, you will see output like this:<pre><code>yarn run v1.12.3
+$ set RSGBOT<span class="hljs-emphasis">_ENV=development &amp;&amp; nodemon ./src/index.ts
+[nodemon] 2.0.4
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: ts,json
+[nodemon] starting `ts-node ./src/index.ts`
+[ApplicationInitialization]: Polling comments
+[ApplicationInitialization]: Polling submissions     
+[ApplicationInitialization]: Polling private messages
+[ApplicationInitialization]: Bot username: RSGBot
+[ApplicationInitialization]: Latest comment fullname: t1_</span>g0ryajf
+[<span class="hljs-symbol">ApplicationInitialization</span>]: <span class="hljs-link">Latest submission fullname: t3_i5vyt3</span>
+[<span class="hljs-symbol">ApplicationInitialization</span>]: <span class="hljs-link">Latest message fullname: t4_qheaga</span>
+[<span class="hljs-symbol">ExampleFeature</span>]: <span class="hljs-link">onInit</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">Retrieving comments before: t1_g0ryajf, submissions before: t3_i5vyt3 and messages before: t4_qheaga</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">No new comments</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">No new submissions</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">No new messages   </span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">Retrieving comments before: t1_g0ryajf, submissions before: t3_i5vyt3 and messages before: t4_qheaga</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">No new comments</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">No new submissions</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">No new messages   </span></code></pre>
+						<ul>
+							<li><code>nodemon</code> restarts the application when you save changes.</li>
+							<li>The Reddit API terms chronologically ordered lists of &quot;things&quot; (comments/posts etc) <a href="https://www.reddit.com/dev/api/#listings">&quot;listings&quot;</a>. When we retrieve from a listing, we specify
+								that we only want things posted after the last thing we processed, e.g. comments posted after the last comment we processed. Things are specified using <a href="https://www.reddit.com/dev/api/#fullnames">&quot;fullnames&quot;</a>, e.g. <code>t1_g0ryajf</code>.
+								Above you will notice our use of fullnames to specify what we want to retrieve. Note that the Reddit API refers to &quot;chronologically after&quot; as before, i.e. if thing <em>a</em> was posted after (chronologically) thing <em>b</em>,
+							thing <em>a</em> is before thing <em>b</em> in the listing. </li>
+						</ul>
+					</li>
+					<li>Navigate to <a href="https://www.reddit.com/r/RSGBot">r/RSGBot</a>. This is our test subreddit. In development mode, the bot is configured to poll it. Post a comment or submission there to verify that your bot polls properly:<pre><code>[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">Retrieving comments before: t1_g0ryajf, submissions before: t3_i5vyt3 and messages before: t4_qheaga</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">No new comments</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">1 new submissions found</span>
+[<span class="hljs-symbol">ExampleFeature</span>]: <span class="hljs-link">onSubmission, author: jtcd, submission title: test</span>
+[<span class="hljs-symbol">Application</span>]: <span class="hljs-link">No new messages</span></code></pre>
+						<ul>
+							<li><code>ExampleFeature</code> echos comments/submissions. You should see replies from your bot on Reddit.</li>
+						</ul>
+					</li>
+				</ol>
+				<a href="#contributing-a-feature" id="contributing-a-feature" style="color: inherit; text-decoration: none;">
+					<h3>Contributing a Feature</h3>
+				</a>
+				<p>&quot;Features&quot; are user facing functionality like auto-flairing of posts, removal of duplicate posts,
+				translating comments etc.</p>
+				<ol>
+					<li><p>First take a look at <a href="./src/features/exampleFeature/ExampleFeature.ts">ExampleFeature.ts</a>. In vsc, open <code>&lt;project root&gt;/src/features/exampleFeature/ExampleFeature.ts</code>:</p>
+						<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Comment, PrivateMessage, Submission } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;snoowrap&quot;</span>;
+<span class="hljs-keyword">import</span> { inject, injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;tsyringe&quot;</span>;
+<span class="hljs-keyword">import</span> Command <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../../shared/Command&quot;</span>;
+<span class="hljs-keyword">import</span> ICommentFeature <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../../shared/ICommentFeature&quot;</span>;
+<span class="hljs-keyword">import</span> ILogger <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../../shared/ILogger&quot;</span>;
+<span class="hljs-keyword">import</span> IPrivateMessageFeature <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../../shared/IPrivateMessageFeature&quot;</span>;
+<span class="hljs-keyword">import</span> ISubmissionFeature <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../../shared/ISubmissionFeature&quot;</span>;
+
+<span class="hljs-comment">/**
+* An example feature that reacts to comments, submissions and private messages.
+*/</span>
+<span class="hljs-meta">@injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">class</span> ExampleFeature <span class="hljs-keyword">implements</span> ICommentFeature, ISubmissionFeature, IPrivateMessageFeature {
+    <span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-meta">@inject</span>(<span class="hljs-string">&#x27;ILogger&#x27;</span>) <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> _logger: ILogger</span>) { }
+
+    <span class="hljs-comment">/**
+     * Logs comment and replies it with a copy of its body.
+    */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> onComment(comment: Comment, command: Command): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+        <span class="hljs-built_in">this</span>._logger.log(<span class="hljs-string">&#x27;ExampleFeature&#x27;</span>, <span class="hljs-string">`onComment, author: <span class="hljs-subst">${comment.author.name}</span>, comment body: <span class="hljs-subst">${comment.body}</span>`</span>);
+
+        <span class="hljs-comment">//@ts-ignore</span>
+        <span class="hljs-keyword">await</span> comment.reply(<span class="hljs-string">`echo: <span class="hljs-subst">${comment.body}</span>`</span>);
+    }
+
+    <span class="hljs-comment">/**
+     * Logs submission and replies it with its title.
+    */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> onSubmission(submission: Submission): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+        <span class="hljs-built_in">this</span>._logger.log(<span class="hljs-string">&#x27;ExampleFeature&#x27;</span>, <span class="hljs-string">`onSubmission, author: <span class="hljs-subst">${submission.author.name}</span>, submission title: <span class="hljs-subst">${submission.title}</span>`</span>);
+
+        <span class="hljs-comment">//@ts-ignore</span>
+        <span class="hljs-keyword">await</span> submission.reply(<span class="hljs-string">`echo: <span class="hljs-subst">${submission.title}</span>`</span>);
+    }
+
+    <span class="hljs-comment">/**
+     * Logs private message and replies it with a copy of its body.
+    */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> onPrivateMessage(privateMessage: PrivateMessage, command: Command): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+        <span class="hljs-built_in">this</span>._logger.log(<span class="hljs-string">&#x27;ExampleFeature&#x27;</span>, <span class="hljs-string">`onPrivateMessage, author: <span class="hljs-subst">${privateMessage.author.name}</span>, private message body: <span class="hljs-subst">${privateMessage.body}</span>`</span>);
+
+        <span class="hljs-comment">//@ts-ignore</span>
+        <span class="hljs-keyword">await</span> privateMessage.reply(<span class="hljs-string">`echo: <span class="hljs-subst">${privateMessage.body}</span>`</span>);
+    }
+
+    <span class="hljs-comment">/**
+     * Logs onInit event.
+    */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> onInit(): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+        <span class="hljs-built_in">this</span>._logger.log(<span class="hljs-string">&#x27;ExampleFeature&#x27;</span>, <span class="hljs-string">&#x27;onInit&#x27;</span>);
+    }
+}</code></pre>
+						<ul>
+							<li>It implements <code>ICommentFeature.onComment</code>, <code>ISubmissionFeature.onSubmission</code> and <code>IPrivateMessageFeature.onPrivateMessage</code> to react to comments, submissions and private messages. </li>
+							<li>It does nothing in <code>IFeature.onInit</code>. Other features might use this method to register proactive events, e.g. logic to create a meme competition thread at the same time every week.</li>
+						</ul>
+					</li>
+					<li><p>Create a new git branch: <code>git checkout -b add_&lt;feature_name&gt;</code>.</p>
+					</li>
+					<li><p>Add a new folder under src/features or copy the <code>src/features/exampleFeature</code> folder.</p>
+					</li>
+					<li><p>Implement onComment/onSubmission/onPrivateMessage/onInit in your feature.</p>
+					</li>
+					<li><p>Write <a href="#unit-testing">unit tests</a>.</p>
+					</li>
+					<li><p><a href="#documenting">Document</a> your feature.</p>
+					</li>
+					<li><p>Register your feature in <a href="./src/index.ts">index.ts</a>. This is how <code>ExampleFeature</code> is registered:</p>
+						<pre><code class="language-typescript"><span class="hljs-comment">// Register a feature</span>
+<span class="hljs-comment">// - Register your feature for interfaces it implements. Note that ICommentFeature, ISubmissionFeature and IPrivateMessage feature</span>
+<span class="hljs-comment">//   all implement IFeature.</span>
+container.register(<span class="hljs-string">&#x27;IFeature&#x27;</span>, ExampleFeature);
+container.register(<span class="hljs-string">&#x27;ICommentFeature&#x27;</span>, ExampleFeature);
+container.register(<span class="hljs-string">&#x27;ISubmissionFeature&#x27;</span>, ExampleFeature);
+container.register(<span class="hljs-string">&#x27;IPrivateMessageFeature&#x27;</span>, ExampleFeature);</code></pre>
+					</li>
+					<li><p><a href="https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request">Create a pull request</a>.</p>
+					</li>
+				</ol>
+				<p>TODO document interfaces, shared types  </p>
+				<a href="#contributing-infrastructuralshared-logic" id="contributing-infrastructuralshared-logic" style="color: inherit; text-decoration: none;">
+					<h3>Contributing Infrastructural/Shared Logic</h3>
+				</a>
+				<p>TODO</p>
+				<a href="#tips" id="tips" style="color: inherit; text-decoration: none;">
+					<h3>Tips</h3>
+				</a>
+				<a href="#typescript-version" id="typescript-version" style="color: inherit; text-decoration: none;">
+					<h4>Typescript Version</h4>
+				</a>
+				<p>This project includes TypeScript 3.9.7 as a dependency. If you have already installed TypeScript on your machine, vsc uses your installed version for type checking.
+				This might be an issue if your installed version is old.</p>
+				<p>To use the included TypesScript version: </p>
+				<ul>
+					<li>Open a <code>.ts</code> file. At the bottom right hand corner of vsc, you should see &quot;TypeScript x.x.x&quot;. </li>
+					<li>Click the version number &gt; Select TypeScript Version &gt; Use Workspace Version.</li>
+				</ul>
+				<a href="#debugging" id="debugging" style="color: inherit; text-decoration: none;">
+					<h4>Debugging</h4>
+				</a>
+				<p>Set a breakpoint, then, in vsc&#39;s main menu, click run &gt; start debugging or press f5. </p>
+				<p>TODO vsc steps into node internals despite</p>
+				<pre><code><span class="hljs-string">&quot;skipFiles&quot;</span>: [
+    <span class="hljs-regexp">//</span> <span class="hljs-string">&quot;node_modules/**/*.js&quot;</span>, <span class="hljs-regexp">//</span> Uncomment to prevent stepping into dependencies
+    <span class="hljs-string">&quot;&lt;node_internals&gt;/**/*.js&quot;</span> <span class="hljs-regexp">//</span> TODO not working
+],</code></pre>
+				<p>in <code>.vscode/launch.json</code>. You will notice yourself stepping through files in the <code>&lt;node_internals&gt;</code> directory (hover over tab of open file to see it is path).
+				For now, set a breakpoint in your code after the internals and click continue to skip all that.</p>
+				<a href="#reddit-api-authorization" id="reddit-api-authorization" style="color: inherit; text-decoration: none;">
+					<h4>Reddit API Authorization</h4>
+				</a>
+				<p>The first time you start the bot, you go through an authorization process. If you would like to understand what the bot is doing, check out <a href="https://github.com/reddit-archive/reddit/wiki/oauth2">Reddit is documentation</a> on authorization.</p>
+				<a href="#vsc-codebase-navigation" id="vsc-codebase-navigation" style="color: inherit; text-decoration: none;">
+					<h4>VSC Codebase Navigation</h4>
+				</a>
+				<p>Press <code>f1</code> to go to definition. This is a good way to figure out what arguments a snoowrap method takes.</p>
+				<a href="#typescriptsnoowrap-await-issue" id="typescriptsnoowrap-await-issue" style="color: inherit; text-decoration: none;">
+					<h4>Typescript/Snoowrap await Issue</h4>
+				</a>
+				<p>Awaiting some snoowrap methods causes typescript error TS1062.</p>
+				<p>This is a known issue:</p>
+				<ul>
+					<li><a href="https://github.com/not-an-aardvark/snoowrap/issues/221">https://github.com/not-an-aardvark/snoowrap/issues/221</a></li>
+					<li><a href="https://github.com/DefinitelyTyped/DefinitelyTyped/issues/33139">https://github.com/DefinitelyTyped/DefinitelyTyped/issues/33139</a></li>
+				</ul>
+				<p>We have verified that the underlying code is safe. If you encounter TS1062, add <code>//@ts-ignore</code> above the line.</p>
+				<a href="#snoowrap-typings-issues" id="snoowrap-typings-issues" style="color: inherit; text-decoration: none;">
+					<h4>Snoowrap typings issues</h4>
+				</a>
+				<p>TODO open issues on snoowrap<br>TODO add primer on typescript and typings</p>
+				<p>Some snoowrap typings are wrong. </p>
+				<a href="#things-to-do" id="things-to-do" style="color: inherit; text-decoration: none;">
+					<h3>Things To Do</h3>
+				</a>
+				<p>These are things we need help with right now. We aren&#39;t limiting contributions to this list - if you have an idea for RSGBot, open an issue and tell us more. </p>
+				<a href="#infrastructure" id="infrastructure" style="color: inherit; text-decoration: none;">
+					<h4>Infrastructure</h4>
+				</a>
+				<a href="#error-handling" id="error-handling" style="color: inherit; text-decoration: none;">
+					<h5>Error Handling</h5>
+				</a>
+				<p>TODO</p>
+				<a href="#ci" id="ci" style="color: inherit; text-decoration: none;">
+					<h5>CI</h5>
+				</a>
+				<p>TODO</p>
+				<a href="#shared" id="shared" style="color: inherit; text-decoration: none;">
+					<h4>Shared</h4>
+				</a>
+				<a href="#commandparser" id="commandparser" style="color: inherit; text-decoration: none;">
+					<h5><code>CommandParser</code></h5>
+				</a>
+				<p>See src/shared/CommandParser for details. Most features will expose commands to users, a shared command parser will save us all time and ensure consistency.
+				Could try a library if anyone has suggestions.</p>
+				<a href="#logger" id="logger" style="color: inherit; text-decoration: none;">
+					<h5><code>Logger</code></h5>
+				</a>
+				<p>See src/shared/Logger for details. Need some way to store and expose logs so devs can monitor their features.</p>
+				<a href="#mongodb-client" id="mongodb-client" style="color: inherit; text-decoration: none;">
+					<h5>MongoDB Client</h5>
+				</a>
+				<p>So we hit the Reddit API less. Things like when a users account was created can be stored in MongoDB.</p>
+				<a href="#features" id="features" style="color: inherit; text-decoration: none;">
+					<h4>Features</h4>
+				</a>
+				<a href="#scheduled-posts" id="scheduled-posts" style="color: inherit; text-decoration: none;">
+					<h5>Scheduled Posts</h5>
+				</a>
+				<p>Private message command to shedule posts.</p>
+				<a href="#flair-system" id="flair-system" style="color: inherit; text-decoration: none;">
+					<h5>Flair System</h5>
+				</a>
+				<p>Replicate <a href="https://www.reddit.com/r/singapore/comments/hpikf7/level_system_trial_2/">existing system</a>. Try determining user&#39;s first activity on
+				r/Singapore using Pushshift.</p>
+				<a href="#event-threads" id="event-threads" style="color: inherit; text-decoration: none;">
+					<h5>Event Threads</h5>
+				</a>
+				<p>Once a week, create thread in competition mode, pin it. After 24 hours, identify winners (authors of comments with top 3 most upvotes).
+				Ask them for a short blurb. Add blurbs to sidebar for a week. Assign special winner emojis to winners.</p>
+				<a href="#translation" id="translation" style="color: inherit; text-decoration: none;">
+					<h5>Translation</h5>
+				</a>
+				<p>Requested by r/Singapore mods. Suggested commands: <code>!translate &lt;text&gt;</code> to translate a block of text, <code>!translate</code> to translate an entire comment or post.
+				Suggested API - <a href="https://github.com/googleapis/nodejs-translate">Google translate</a>. Up to you to design the feature though. </p>
+				<a href="#auto-remove-duplicate-links-with-different-query-parameters" id="auto-remove-duplicate-links-with-different-query-parameters" style="color: inherit; text-decoration: none;">
+					<h5>Auto-Remove Duplicate Links with Different Query Parameters</h5>
+				</a>
+				<p>Requested by r/Singapore mods. Right now &quot;google.com?user=1&quot; and &quot;google.com?user=2&quot; aren&#39;t considered duplicates by reddit is built in bot.
+				Mods want such duplicates removed, but they want youtube timestamped links excluded.</p>
+				<a href="#limit-submissions-to-5-a-day" id="limit-submissions-to-5-a-day" style="color: inherit; text-decoration: none;">
+					<h5>Limit Submissions to 5 a day</h5>
+				</a>
+				<p>Requested by r/Singapore mods.</p>
+				<a href="#auto-flairing" id="auto-flairing" style="color: inherit; text-decoration: none;">
+					<h5>Auto-Flairing</h5>
+				</a>
+				<p>Use ML to detect post category, flair accordingly.</p>
+				<a href="#concepts" id="concepts" style="color: inherit; text-decoration: none;">
+					<h2>Concepts</h2>
+				</a>
+				<p>We&#39;d like this project to be accessible. In this section we expand on concepts and tools
+				we have used and provide links to in-depth information.</p>
+				<a href="#unit-testing" id="unit-testing" style="color: inherit; text-decoration: none;">
+					<h3>Unit Testing</h3>
+				</a>
+				<a href="#overview-1" id="overview-1" style="color: inherit; text-decoration: none;">
+					<h4>Overview</h4>
+				</a>
+				<p>This project&#39;s unit tests are function scoped and &quot;pure&quot;/&quot;mockist&quot;. This means we mock all of a function&#39;s dependencies and verify that expected arguments are passed to them.
+				For example, if we are testing function <code>doSomething()</code> and it calls <code>Logger.log(message)</code>, we mock <code>Logger.log</code> and verify that it receives the expected message.</p>
+				<p>Why pure unit tests?</p>
+				<ul>
+					<li>This project depends heavily on remote APIs. By mocking dependencies that call remote APIs we avoid onerous setup (maintaining API keys etc) and susceptibility to intermittent network issues.  </li>
+					<li>Dependencies that don&#39;t call remote APIs may do so down the line. E.g. <code>Logger.log</code> only writes to console for now, eventually it might push info to a remote logging service.</li>
+					<li>It may not always be clear to contributors whether a dependency calls remote APIs.</li>
+					<li>Mocking all dependencies means unit tests do not touch logic in other classes. This clear delineation of unit test boundaries is helpful for open source projects like ours - when a failure occurs, contributors
+					know for certain the issue is with logic in the function under test, not a dependency that they may not be familiar with.</li>
+					<li>Having everyone mock all dependencies keeps things simple and consistent.</li>
+				</ul>
+				<a href="#writing-unit-tests" id="writing-unit-tests" style="color: inherit; text-decoration: none;">
+					<h4>Writing Unit Tests</h4>
+				</a>
+				<p>We use <a href="https://jestjs.io/en/">Jest</a> for mocking, asserting and running tests. Refer to Jest&#39;s <a href="https://jestjs.io/docs/en/getting-started.html">documentation</a> for details on the framework.  </p>
+				<p>Test files are located in the <code>&lt;project root&gt;/test</code> directory. File structure in the directory is the same as in <code>&lt;project root&gt;/src</code>.  </p>
+				<p>We provide an example unit test below to give an idea of how we structure unit tests. We have included some basic Jest tips, we recommend going through their
+				documentation for the full picture though.</p>
+				<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+					<h5>Example</h5>
+				</a>
+				<p>The following code is extracted from <a href="./src/features/exampleFeature/ExampleFeature.ts">ExampleFeature.ts</a> and <a href="./test/features/exampleFeature/ExampleFeature.test.ts">ExampleFeature.test.ts</a>.  </p>
+				<p>we are going to look at the example test for <code>ExampleFeature.onComment</code>:  </p>
+				<pre><code class="language-ts">...
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">class</span> ExampleFeature <span class="hljs-keyword">implements</span> ICommentFeature, ISubmissionFeature, IPrivateMessageFeature {
+    ...
+
+    <span class="hljs-comment">/**
+     * Logs comment and replies it with a copy of its body.
+     */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> onComment(comment: Comment, command: Command): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+        <span class="hljs-built_in">this</span>._logger.log(<span class="hljs-string">&#x27;ExampleFeature&#x27;</span>, <span class="hljs-string">`onComment, author: <span class="hljs-subst">${comment.author.name}</span>, comment body: <span class="hljs-subst">${comment.body}</span>`</span>);
+
+        <span class="hljs-comment">//@ts-ignore</span>
+        <span class="hljs-keyword">await</span> comment.reply(<span class="hljs-string">`echo: <span class="hljs-subst">${comment.body}</span>`</span>);
+    }
+
+    ...
+}</code></pre>
+				<p>The test. Take note of comments beginning with &quot;Note:&quot;:</p>
+				<pre><code class="language-ts">...
+
+<span class="hljs-keyword">import</span> { mocked } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;ts-jest/utils&quot;</span>;
+<span class="hljs-keyword">import</span> ExampleFeature <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../../../src/features/exampleFeature/ExampleFeature&quot;</span>;
+<span class="hljs-keyword">import</span> Logger <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../../../src/shared/Logger&quot;</span>;
+<span class="hljs-keyword">import</span> Comment <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;snoowrap/dist/objects/Comment&quot;</span>;
+<span class="hljs-keyword">import</span> RedditUser <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;snoowrap/dist/objects/RedditUser&quot;</span>;
+
+<span class="hljs-comment">// Note: jest.mock(modulePath) calls are hoisted above import statements. They replace module exports with &quot;automatic mocks&quot;.</span>
+<span class="hljs-comment">// Automatic mocks have the same surface areas as original exports, but all their functions are Jest &quot;mock functions&quot;.</span>
+<span class="hljs-comment">// Jest &quot;mock functions&quot; always return undefined and have an extra property, &quot;mock&quot;, which stores their call history.</span>
+<span class="hljs-comment">// With the following lines, when we import Logger, Comment and RedditUser, we get automatic mocks instead. Note</span>
+<span class="hljs-comment">// that all three are classes - their construtor functions also get replaced by Jest.</span>
+jest.mock(<span class="hljs-string">&quot;../../../src/shared/Logger&quot;</span>);
+jest.mock(<span class="hljs-string">&quot;snoowrap/dist/objects/Comment&quot;</span>);
+jest.mock(<span class="hljs-string">&quot;snoowrap/dist/objects/RedditUser&quot;</span>);
+...
+
+<span class="hljs-comment">// Note: describe is used to group tests. For simplicity and consistency, use one describe per function. The describe&#x27;s name should be the function&#x27;s name.</span>
+<span class="hljs-comment">// This helps with test result formatting and shared setup/teardown.</span>
+describe(<span class="hljs-string">&#x27;onComment&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">// Note: Test names should be verbs.</span>
+    test(<span class="hljs-string">&#x27;logs comment details and replies&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+        <span class="hljs-comment">// Arrange</span>
+        <span class="hljs-keyword">const</span> dummyAuthorName = <span class="hljs-string">&#x27;dummyAuthorName&#x27;</span>;
+        <span class="hljs-keyword">const</span> dummyBody = <span class="hljs-string">&#x27;dummyBody&#x27;</span>;
+
+        <span class="hljs-keyword">const</span> mockRedditUser = <span class="hljs-keyword">new</span> RedditUser(<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>); <span class="hljs-comment">// Note: As mentioned before, RedditUser&#x27;s constructor function gets replaced. If we didn&#x27;t mock RedditUser, </span>
+                                                                 <span class="hljs-comment">// we&#x27;d get errors because the original implementation doesn&#x27;t accept null arguments. Same for Comment.</span>
+        mockRedditUser.name = dummyAuthorName;
+
+        <span class="hljs-keyword">const</span> mockComment = <span class="hljs-keyword">new</span> Comment(<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+        mockComment.author = mockRedditUser;
+        mockComment.body = dummyBody;
+
+        <span class="hljs-keyword">const</span> mockLogger = <span class="hljs-keyword">new</span> Logger();
+
+        <span class="hljs-keyword">const</span> testSubject = <span class="hljs-keyword">new</span> ExampleFeature(mockLogger);
+
+        <span class="hljs-comment">// Act</span>
+        <span class="hljs-keyword">await</span> testSubject.onComment(mockComment, <span class="hljs-literal">null</span>);
+
+        <span class="hljs-comment">// Assert</span>
+        <span class="hljs-keyword">const</span> mockLoggerTyped = mocked(mockLogger); <span class="hljs-comment">// Note: Typescript has no way to know that mockLogger is an automatic mock. This helper method adds automatic mock typings</span>
+                                                    <span class="hljs-comment">// to fix that.</span>
+        expect(mockLoggerTyped.log.mock.calls).toEqual([[<span class="hljs-string">&#x27;ExampleFeature&#x27;</span>, <span class="hljs-string">`onComment, author: <span class="hljs-subst">${dummyAuthorName}</span>, comment body: <span class="hljs-subst">${dummyBody}</span>`</span>]]);
+
+        <span class="hljs-keyword">const</span> mockCommentTyped = mocked(mockComment);
+        expect(mockCommentTyped.reply.mock.calls).toEqual([[<span class="hljs-string">`echo: <span class="hljs-subst">${dummyBody}</span>`</span>]]);
+    });
+});
+
+...</code></pre>
+				<a href="#documenting" id="documenting" style="color: inherit; text-decoration: none;">
+					<h3>Documenting</h3>
+				</a>
+				<a href="#overview-2" id="overview-2" style="color: inherit; text-decoration: none;">
+					<h4>Overview</h4>
+				</a>
+				<p>We use <a href="https://typedoc.org/guides/doccomments/">TypeDoc</a> to generate our docs. Docs
+				are hosted <a href="https://RSGTechSupport.github.io/RSGBot">here</a> using Github pages.  </p>
+				<p>All public and protected members should be documented.</p>
+				<a href="#writing-documentation" id="writing-documentation" style="color: inherit; text-decoration: none;">
+					<h4>Writing Documentation</h4>
+				</a>
+				<p>Basic TypeDoc syntax is similar to <a href="https://jsdoc.app/">JSDoc</a> syntax. For example:</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">/**
+ * This is a TypeDoc-valid description of the foo function. 
+ */</span>
+<span class="hljs-keyword">public</span> foo(): <span class="hljs-built_in">void</span> {
+    ...
+}</code></pre>
+				<p>TypeDoc parses markdown by default. For example:</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">/**
+ * [Markdown works here](www.example.com).
+ * 
+ * ```typescript
+ * const example = &#x27;code blocks work&#x27;;
+ * ```
+ */</span>
+<span class="hljs-keyword">public</span> foo(): <span class="hljs-built_in">void</span> {
+    ...
+}</code></pre>
+				<p>Note that TypeDoc only parses a subset of JSDoc&#39;s tags. For example, it parses the <code>@param</code> tag:</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">/**
+ * @param someArg This is a TypeDoc-valid description of someArg
+ */</span>
+<span class="hljs-keyword">public</span> foo(someArg: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">void</span> {
+    ...
+}</code></pre>
+				<p>Many JSDoc tags aren&#39;t necessary since the information they provide can be extracted from typescript.  </p>
+				<p>You can find more information on TypeDoc syntax, including accepted tags, <a href="https://typedoc.org/guides/doccomments/">here</a>.</p>
+				<a href="#source-control" id="source-control" style="color: inherit; text-decoration: none;">
+					<h3>Source Control</h3>
+				</a>
+				<p>TODO Basics
+				TODO git/github</p>
+				<a href="#static-typing" id="static-typing" style="color: inherit; text-decoration: none;">
+					<h3>Static Typing</h3>
+				</a>
+				<p>TODO Basics
+				TODO Typescript</p>
+				<a href="#package-management" id="package-management" style="color: inherit; text-decoration: none;">
+					<h3>Package Management</h3>
+				</a>
+				<p>TODO Basics
+				TODO Yarn</p>
+				<a href="#authorization-and-oauth-20" id="authorization-and-oauth-20" style="color: inherit; text-decoration: none;">
+					<h3>Authorization and OAuth 2.0</h3>
+				</a>
+				<p>TODO Basics
+				TODO OAuth 2.0</p>
+				<a href="#nosql-databases" id="nosql-databases" style="color: inherit; text-decoration: none;">
+					<h3>NoSQL Databases</h3>
+				</a>
+				<p>TODO Basics
+				TODO MongoDB</p>
+				<a href="#running-tests" id="running-tests" style="color: inherit; text-decoration: none;">
+					<h5>Running Tests</h5>
+				</a>
+				<a href="#vsc" id="vsc" style="color: inherit; text-decoration: none;">
+					<h6>VSC</h6>
+				</a>
+				<p>Navigate to the &quot;Run&quot; view (bug and play icon on the leftmost bar). Select &quot;Debug Jest Tests&quot; in the drop-down. Press ctrl + f5 or from
+				the top horizontal menu, Run &gt; Run Without Debugging. You will need to have your terminal open to see test output.</p>
+				<a href="#command-line" id="command-line" style="color: inherit; text-decoration: none;">
+					<h6>Command Line</h6>
+				</a>
+				<p><code>yarn run test</code>.</p>
+				<a href="#debugging-tests" id="debugging-tests" style="color: inherit; text-decoration: none;">
+					<h5>Debugging Tests</h5>
+				</a>
+				<a href="#vsc-1" id="vsc-1" style="color: inherit; text-decoration: none;">
+					<h6>VSC</h6>
+				</a>
+				<p>Navigate to the &quot;Run&quot; view (bug and play icon on the leftmost bar). Select &quot;Debug Jest Tests&quot; in the drop-down. Press f5 or from
+				the top horizontal menu, Run &gt; Start Debugging. Or  </p>
+				<a href="#command-line-1" id="command-line-1" style="color: inherit; text-decoration: none;">
+					<h6>Command Line</h6>
+				</a>
+				<p><code>yarn run debug-tests</code>, navigate to &quot;chrome://inspect&quot; in Chrome, click &quot;Open dedicated DevTools for Node&quot;. Note, break points don&#39;t work if you use Chrome, so you will
+				have to use <code>debugger</code>.</p>
+				<a href="#dependency-injection" id="dependency-injection" style="color: inherit; text-decoration: none;">
+					<h3>Dependency Injection</h3>
+				</a>
+				<p>TODO Basics
+				TODO tsyringe</p>
+				<a href="#asynchrony" id="asynchrony" style="color: inherit; text-decoration: none;">
+					<h3>Asynchrony</h3>
+				</a>
+				<p>TODO callbacks
+				TODO async await</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_application_.html">&quot;<wbr>Application&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_features_examplefeature_examplefeature_.html">&quot;features/example<wbr>Feature/<wbr>Example<wbr>Feature&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_authorizer_.html">&quot;shared/<wbr>Authorizer&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_command_.html">&quot;shared/<wbr>Command&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_commandparser_.html">&quot;shared/<wbr>Command<wbr>Parser&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_configuration_.html">&quot;shared/<wbr>Configuration&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_iauthorizationresult_.html">&quot;shared/IAuthorization<wbr>Result&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_icommandparser_.html">&quot;shared/ICommand<wbr>Parser&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_icommentfeature_.html">&quot;shared/IComment<wbr>Feature&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_ifeature_.html">&quot;shared/IFeature&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_ilogger_.html">&quot;shared/ILogger&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_iprivatemessagefeature_.html">&quot;shared/IPrivate<wbr>Message<wbr>Feature&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_isubmissionfeature_.html">&quot;shared/ISubmission<wbr>Feature&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_logger_.html">&quot;shared/<wbr>Logger&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_shared_mode_.html">&quot;shared/<wbr>Mode&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

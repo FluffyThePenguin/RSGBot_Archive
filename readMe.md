@@ -31,13 +31,14 @@ r/Singapore's community building bot.
       - [Auto-Remove Duplicate Links with Different Query Parameters](#auto-remove-duplicate-links-with-different-query-parameters)
       - [Limit Submissions to 5 a day](#limit-submissions-to-5-a-day)
       - [Auto-Flairing](#auto-flairing)
-- [Related](#related)
+- [Concepts](#concepts)
+  - [Unit Testing](#unit-testing)
+  - [Documenting](#documenting)
   - [Source Control](#source-control)
   - [Static Typing](#static-typing)
   - [Package Management](#package-management)
   - [Authorization and OAuth 2.0](#authorization-and-oauth-20)
   - [NoSQL Databases](#nosql-databases)
-  - [Unit Testing](#unit-testing)
   - [Dependency Injection](#dependency-injection)
   - [Asynchrony](#asynchrony)
 
@@ -121,10 +122,16 @@ translating comments etc.
     import IPrivateMessageFeature from "../../shared/IPrivateMessageFeature";
     import ISubmissionFeature from "../../shared/ISubmissionFeature";
 
+    /**
+    * An example feature that reacts to comments, submissions and private messages.
+    */
     @injectable()
     export default class ExampleFeature implements ICommentFeature, ISubmissionFeature, IPrivateMessageFeature {
         constructor(@inject('ILogger') private readonly _logger: ILogger) { }
 
+        /**
+         * Logs comment and replies it with a copy of its body.
+        */
         public async onComment(comment: Comment, command: Command): Promise<void> {
             this._logger.log('ExampleFeature', `onComment, author: ${comment.author.name}, comment body: ${comment.body}`);
 
@@ -132,6 +139,9 @@ translating comments etc.
             await comment.reply(`echo: ${comment.body}`);
         }
 
+        /**
+         * Logs submission and replies it with its title.
+        */
         public async onSubmission(submission: Submission): Promise<void> {
             this._logger.log('ExampleFeature', `onSubmission, author: ${submission.author.name}, submission title: ${submission.title}`);
 
@@ -139,6 +149,9 @@ translating comments etc.
             await submission.reply(`echo: ${submission.title}`);
         }
 
+        /**
+         * Logs private message and replies it with a copy of its body.
+        */
         public async onPrivateMessage(privateMessage: PrivateMessage, command: Command): Promise<void> {
             this._logger.log('ExampleFeature', `onPrivateMessage, author: ${privateMessage.author.name}, private message body: ${privateMessage.body}`);
 
@@ -146,6 +159,9 @@ translating comments etc.
             await privateMessage.reply(`echo: ${privateMessage.body}`);
         }
 
+        /**
+         * Logs onInit event.
+        */
         public async onInit(): Promise<void> {
             this._logger.log('ExampleFeature', 'onInit');
         }
@@ -157,7 +173,8 @@ translating comments etc.
 3. Add a new folder under src/features or copy the `src/features/exampleFeature` folder.
 4. Implement onComment/onSubmission/onPrivateMessage/onInit in your feature.
 5. Write [unit tests](#unit-testing).
-5. Register your feature in [index.ts](./src/index.ts). This is how `ExampleFeature` is registered:
+6. [Document](#documenting) your feature.
+7. Register your feature in [index.ts](./src/index.ts). This is how `ExampleFeature` is registered:
     ```typescript
     // Register a feature
     // - Register your feature for interfaces it implements. Note that ICommentFeature, ISubmissionFeature and IPrivateMessage feature
@@ -167,7 +184,7 @@ translating comments etc.
     container.register('ISubmissionFeature', ExampleFeature);
     container.register('IPrivateMessageFeature', ExampleFeature);
     ```
-6. [Create a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+8. [Create a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 TODO document interfaces, shared types  
 
@@ -268,25 +285,10 @@ Requested by r/Singapore mods.
 ##### Auto-Flairing
 Use ML to detect post category, flair accordingly.
 
-## Related
+## Concepts
 We'd like this project to be accessible. In this section we expand on concepts and tools
 we have used and provide links to in-depth information.
 
-### Source Control
-TODO Basics
-TODO git/github
-### Static Typing
-TODO Basics
-TODO Typescript
-### Package Management
-TODO Basics
-TODO Yarn
-### Authorization and OAuth 2.0
-TODO Basics
-TODO OAuth 2.0
-### NoSQL Databases
-TODO Basics
-TODO MongoDB
 ### Unit Testing
 #### Overview
 This project's unit tests are function scoped and "pure"/"mockist". This means we mock all of a function's dependencies and verify that expected arguments are passed to them.
@@ -317,10 +319,12 @@ we are going to look at the example test for `ExampleFeature.onComment`:
 ```ts
 ...
 
-@injectable()
 export default class ExampleFeature implements ICommentFeature, ISubmissionFeature, IPrivateMessageFeature {
-    constructor(@inject('ILogger') private readonly _logger: ILogger) { }
+    ...
 
+    /**
+     * Logs comment and replies it with a copy of its body.
+     */
     public async onComment(comment: Comment, command: Command): Promise<void> {
         this._logger.log('ExampleFeature', `onComment, author: ${comment.author.name}, comment body: ${comment.body}`);
 
@@ -389,6 +393,73 @@ describe('onComment', () => {
 
 ...
 ```
+
+### Documenting
+#### Overview
+We use [TypeDoc](https://typedoc.org/guides/doccomments/) to generate our docs. You can generate our documentation locally
+with `yarn run gen-docs`. Generated documentation can be found in `<project root>/docs`. Open `<project root>/docs/index.html` in your browser
+to peruse it.  
+
+Documentation is regenerated automatically when a pull request is merged. Docs are hosted [here](https://RSGTechSupport.github.io/RSGBot) using Github pages.  
+
+#### Writing Documentation
+All public and protected members should be documented.
+Basic TypeDoc syntax is similar to [JSDoc](https://jsdoc.app/) syntax. For example:
+
+```typescript
+/** 
+ * This is a TypeDoc-valid description of the foo function. 
+ */
+public foo(): void {
+    ...
+}
+```
+
+TypeDoc parses markdown by default. For example:
+
+```typescript
+/** 
+ * [Markdown works here](www.example.com).
+ * 
+ * ```typescript
+ * const example = 'code blocks work';
+ * ```
+ */
+public foo(): void {
+    ...
+}
+```
+
+Note that TypeDoc only parses a subset of JSDoc's tags. For example, it parses the `@param` tag:
+
+```typescript
+/** 
+ * @param someArg This is a TypeDoc-valid description of someArg
+ */
+public foo(someArg: string): void {
+    ...
+}
+```
+
+Many JSDoc tags aren't necessary since the information they provide can be extracted from typescript.  
+
+You can find more information on TypeDoc syntax, including accepted tags, [here](https://typedoc.org/guides/doccomments/).
+
+### Source Control
+TODO Basics
+TODO git/github
+### Static Typing
+TODO Basics
+TODO Typescript
+### Package Management
+TODO Basics
+TODO Yarn
+### Authorization and OAuth 2.0
+TODO Basics
+TODO OAuth 2.0
+### NoSQL Databases
+TODO Basics
+TODO MongoDB
 
 ##### Running Tests
 ###### VSC

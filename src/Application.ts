@@ -31,7 +31,9 @@ export default class Application {
         private readonly _snoowrap: snoowrap,
         private readonly _configuration: Configuration) { }
 
-    // Prepare for polling
+    /**
+     * Starts polling.
+     */
     public async start(): Promise<void> {
         // Convenience
         const subredditName = this._configuration.subreddit;

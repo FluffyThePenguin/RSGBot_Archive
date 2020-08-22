@@ -9,7 +9,7 @@ import Configuration from "./shared/Configuration";
 import { Mode } from "./shared/Mode";
 import CommandParser from "./shared/CommandParser";
 import Logger from "./shared/Logger";
-import authorizer from "./tools/Authorizer";
+import authorizer from "./shared/Authorizer";
 
 let clientID = process.env.CLIENT_ID;
 let clientSecret = process.env.CLIENT_SECRET;
