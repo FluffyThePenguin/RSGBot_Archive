@@ -400,10 +400,11 @@ We use [TypeDoc](https://typedoc.org/guides/doccomments/) to generate our docs. 
 with `yarn run gen-docs`. Generated documentation can be found in `<project root>/docs`. Open `<project root>/docs/index.html` in your browser
 to peruse it.  
 
-Documentation is regenerated automatically when a pull request is merged. Docs are hosted [here](https://RSGTechSupport.github.io/RSGBot) using Github pages.  
+Documentation is regenerated automatically when a pull request is merged. Docs are hosted [here](https://RSGTechSupport.github.io/RSGBot/) using Github pages.  
+
+All public and protected members should be documented. This will help with the maintainability of the project.
 
 #### Writing Documentation
-All public and protected members should be documented.
 Basic TypeDoc syntax is similar to [JSDoc](https://jsdoc.app/) syntax. For example:
 
 ```typescript
