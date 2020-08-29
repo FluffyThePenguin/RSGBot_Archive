@@ -1,5 +1,9 @@
 # RSGBot
 
+[![Build Status](https://dev.azure.com/JeremyTCD/RSGBot/_apis/build/status/RSGTechSupport.RSGBot?branchName=master)](https://dev.azure.com/JeremyTCD/RSGBot/_build/latest?definitionId=13&branchName=master) 
+[![codecov](https://codecov.io/gh/RSGTechSupport/RSGBot/branch/master/graph/badge.svg)](https://codecov.io/gh/RSGTechSupport/RSGBot)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/RSGTechSupport/RSGBot/blob/master/license.md)
+
 r/Singapore's community building bot.
 
 ## Table of Contents
