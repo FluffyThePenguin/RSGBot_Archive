@@ -1,5 +1,6 @@
 const { join } = require('path');
 const { Application, TSConfigReader } = require('typedoc');
+const { writeFileSync } = require('fs');
 
 const typedocApp = new Application();
 
@@ -20,4 +21,8 @@ const inputFiles = typedocApp.expandInputFiles([join(__dirname, '../src')]); // 
 console.log(`Generating documentation for:\n\n${inputFiles.join('\n')}`);
 
 // Run
+const docsDir = join(__dirname, '../docs');
 typedocApp.generateDocs(inputFiles, join(__dirname, '../docs'));
+
+// Add .nojekyll file - https://github.com/TypeStrong/typedoc/issues/149
+writeFileSync(join(docsDir, '.nojekyll'));
