@@ -1,0 +1,57 @@
+# TODO
+# - Cache dependencies
+# - Generate docs and push to gh-pages branch
+# - Deploy only if source code changes
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.18.3'
+  displayName: 'Install Node.js 12.18.3'
+
+- pwsh: |
+    "Installing dependencies"
+    yarn install --frozen-lockfile
+    if($lastExitCode -ne 0){
+      throw "An error occurred while installing dependencies"
+    }
+
+    "Running tests"
+    ./node_modules/.bin/jest --coverage
+    if($lastExitCode -ne 0){
+      throw "An error occurred while running tests"
+    }
+
+    # We don't need to keep codecov token secret
+    "Publishing code coverage report"
+    ./node_modules/.bin/codecov --token="378644b7-265c-4306-8d67-b3303a336df2"
+    if($lastExitCode -ne 0){
+      throw "An error occurred while publishing code coverage report"
+    }
+
+    # Even if we aren't deploying, make sure project builds without errors
+    "Building"
+    yarn run build
+    if($lastExitCode -ne 0){
+      throw "A build error occured"
+    }
+
+    # Deploy
+    if($env:BUILD_SOURCEBRANCHNAME -ne 'master'){
+      "Pull request build, nothing to deploy"
+      exit
+    }
+    
+    git checkout master
+    git remote add heroku "https://heroku:$env:HEROKU_PAT@git.heroku.com/rsgbot1.git"     
+    git push heroku master -f
+
+  displayName: 'Build test deploy'
+  env:
+    HEROKU_PAT: $(herokuPat)
