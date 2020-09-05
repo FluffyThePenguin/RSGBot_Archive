@@ -1,15 +1,17 @@
 import Path from "path";
-require('dotenv').config({ path: Path.join(__dirname, "../variables.env") });
 import "reflect-metadata";
 import snoowrap from "snoowrap";
-import { container } from "tsyringe";
+import { container, instanceCachingFactory } from "tsyringe";
 import Application from "./Application";
+import authorizer from "./shared/authorization/Authorizer";
+import Configuration from "./shared/configuration/Configuration";
+import { Mode } from "./shared/configuration/Mode";
+import Feature from "./shared/features/Feature";
 import ExampleFeature from "./features/exampleFeature/ExampleFeature";
-import Configuration from "./shared/Configuration";
-import { Mode } from "./shared/Mode";
-import CommandParser from "./shared/CommandParser";
-import Logger from "./shared/Logger";
-import authorizer from "./shared/Authorizer";
+import { constructor } from "tsyringe/dist/typings/types";
+import R7InsightLogger from "r7insight_node";
+
+require('dotenv').config({ path: Path.join(__dirname, "../variables.env") });
 
 let clientID = process.env.CLIENT_ID;
 let clientSecret = process.env.CLIENT_SECRET;
@@ -33,8 +35,9 @@ function onAuthorized() {
     // Get configuration values
     const mode = process.env.RSGBOT_ENV === 'production' ? Mode.production : Mode.development;
     const subreddit = process.env.SUBREDDIT ?? 'RSGBot';
+    const loggingPat = process.env.LOGGING_PAT;
 
-    // Register shared services
+    // Register shared objects
     container.registerInstance(Configuration, new Configuration(mode, subreddit));
     container.registerInstance(snoowrap, new snoowrap({
         userAgent: 'RSGBot v0.1',
@@ -42,16 +45,16 @@ function onAuthorized() {
         clientSecret: clientSecret,
         refreshToken: refreshToken
     }));
-    container.register('ICommandParser', CommandParser);
-    container.register('ILogger', Logger);
+    container.register(R7InsightLogger, {
+        useFactory: instanceCachingFactory(() => loggingPat == null ? null : new R7InsightLogger({
+            token: loggingPat,
+            region: 'us'
+        }))
+    });
 
-    // Register features. Note that ICommentFeature, ISubmissionFeature and IPrivateMessageFeature all implement IFeature.
     // Register your feature in the development block while developing. Register in the production block when you're ready to merge into master.
     if (mode === Mode.development) {
-        container.register('IFeature', ExampleFeature);
-        container.register('ICommentFeature', ExampleFeature);
-        container.register('ISubmissionFeature', ExampleFeature);
-        container.register('IPrivateMessageFeature', ExampleFeature);
+        container.register(Feature as constructor<Feature>, ExampleFeature); // Cast abstract class constructor to concrete constructor - https://github.com/microsoft/tsyringe/issues/108
     } else {
         // Production features
     }
