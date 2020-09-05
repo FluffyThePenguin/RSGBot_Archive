@@ -7,10 +7,11 @@ export default abstract class Feature {
         _logger.setTag(this.constructor.name);
     }
 
-    protected abstract onInit(): Promise<void>;
-    protected abstract onComment(comment: Comment, command: Command): Promise<void>;
-    protected abstract onPrivateMessage(privateMessage: PrivateMessage, command: Command): Promise<void>;
-    protected abstract onSubmission(submission: Submission): Promise<void>;
+    // These should be protected, but we leave them as public for simpliciy
+    public abstract onInit(): Promise<void>;
+    public abstract onComment(comment: Comment, command: Command): Promise<void>;
+    public abstract onPrivateMessage(privateMessage: PrivateMessage, command: Command): Promise<void>;
+    public abstract onSubmission(submission: Submission): Promise<void>;
 
     public async onInitCore(): Promise<void> {
         try {
