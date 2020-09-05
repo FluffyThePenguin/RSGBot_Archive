@@ -1,7 +1,7 @@
 import Path from "path";
 import "reflect-metadata";
 import snoowrap from "snoowrap";
-import { container } from "tsyringe";
+import { container, instanceCachingFactory } from "tsyringe";
 import Application from "./Application";
 import authorizer from "./shared/authorization/Authorizer";
 import Configuration from "./shared/configuration/Configuration";
@@ -9,6 +9,7 @@ import { Mode } from "./shared/configuration/Mode";
 import Feature from "./shared/features/Feature";
 import ExampleFeature from "./features/exampleFeature/ExampleFeature";
 import { constructor } from "tsyringe/dist/typings/types";
+import R7InsightLogger from "r7insight_node";
 
 require('dotenv').config({ path: Path.join(__dirname, "../variables.env") });
 
@@ -34,6 +35,7 @@ function onAuthorized() {
     // Get configuration values
     const mode = process.env.RSGBOT_ENV === 'production' ? Mode.production : Mode.development;
     const subreddit = process.env.SUBREDDIT ?? 'RSGBot';
+    const loggingPat = process.env.LOGGING_PAT;
 
     // Register shared objects
     container.registerInstance(Configuration, new Configuration(mode, subreddit));
@@ -43,6 +45,12 @@ function onAuthorized() {
         clientSecret: clientSecret,
         refreshToken: refreshToken
     }));
+    container.register(R7InsightLogger, {
+        useFactory: instanceCachingFactory(() => loggingPat == null ? null : new R7InsightLogger({
+            token: loggingPat,
+            region: 'us'
+        }))
+    });
 
     // Register your feature in the development block while developing. Register in the production block when you're ready to merge into master.
     if (mode === Mode.development) {
