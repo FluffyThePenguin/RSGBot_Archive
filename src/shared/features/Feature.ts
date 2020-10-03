@@ -7,7 +7,7 @@ export default abstract class Feature {
         _logger.setTag(this.constructor.name);
     }
 
-    // These should be protected, but we leave them as public for simpliciy
+    // These should be protected, but we leave them as public for simplicity
     public abstract onInit(): Promise<void>;
     public abstract onComment(comment: Comment, command: Command): Promise<void>;
     public abstract onPrivateMessage(privateMessage: PrivateMessage, command: Command): Promise<void>;

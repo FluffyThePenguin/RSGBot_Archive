@@ -3,24 +3,24 @@ import { singleton } from "tsyringe";
 
 @singleton()
 export default class CommandParser {
-    // Returns a Command if candidateCommand is a command, null otherwise.
+    // Returns a Command if candidateCommand is a valid, null otherwise.
     //
     // Basic command regex: / *! *[a-zA-Z0-9]+ +- *[a-zA-Z0-9]+ +[^ ]*+/
+    //   - See test/shared/commands/CommandParser.test.ts for examples of valid and invalid commands.
     //   - Some autocorrect systems add spaces after ! and -, so we're flexible about spaces.
-    //   - If option value begins with " or “ (curly or straight quotes), value extends to next unescaped " or ”. This is so users can enter long, multiline strings as values.
-    //     We accept curly quotes since some mobile devices default to them.
+    //   - If an option value begins with " or “ (curly or straight quotes), value extends to next unescaped " or ”. This way users can enter spaced, multiline strings as values.
+    //   - We accept curly quotes since some mobile devices default to them.
     //   - Multiple options are allowed
-    // See test/shared/commands/CommandParser.test.ts for examples of valid and invalid commands.
     //
-    // We want users to get feedback when they enter invalid commands (i.e. no failing silently). For now we don't provide granular feedback - 
+    // We want to give users feedback when they enter invalid commands (i.e. no failing silently). For now our feedback isn't granular - 
     // if we encounter invalid syntax in candidateCommand, tryParse returns null and the Application instance just sends the user a message
-    // stating that the command is invalid along with a list of valid commands.
+    // stating that the command is invalid along with a list of valid commands. This parsing method does allow for granular feedback,
+    // consider adding in future.
     public tryParse(candidateCommand: string): Command {
         const numCharacters = candidateCommand.length;
         const maxIndex = numCharacters - 1;
         let index = 0;
-        let commandNameStartIndex: number;
-
+        
         // Spaces before !
         index = this.getIndexOfNextNonSpaceCharacter(candidateCommand, numCharacters, index);
         if (index > maxIndex || candidateCommand[index] !== '!') {
@@ -32,7 +32,7 @@ export default class CommandParser {
         if (index > maxIndex || !this.isValidNameChar(candidateCommand[index])) {
             return null;
         }
-        commandNameStartIndex = index;
+        const commandNameStartIndex = index;
 
         // Command name
         index = this.getIndexOfNextInvalidNameCharacter(candidateCommand, numCharacters, index + 1);
@@ -86,6 +86,8 @@ export default class CommandParser {
             if (index > maxIndex) {
                 return new Command(commandName, options);
             }
+            
+            // Option value
             const valueFirstChar = candidateCommand[index];
             if (valueFirstChar === '"' || valueFirstChar === '“') { // Parse till " or ”
                 valueStartIndex = index + 1; // Skip quote
@@ -101,6 +103,7 @@ export default class CommandParser {
                 index = this.getIndexOfNextSpecifiedCharacter(candidateCommand, numCharacters, index + 1, ' ');
             }
 
+            // Reached end
             if (index > maxIndex) {
                 options.set(optionName, candidateCommand.slice(valueStartIndex));
 
