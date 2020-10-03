@@ -11,7 +11,7 @@ r/Singapore's community building bot.
 - [Contributing](#contributing)
   - [Getting Started](#getting-started)
   - [Contributing a Feature](#contributing-a-feature)
-  - [Contributing Infrastructural/Shared Logic](#contributing-infrastructuralshared-logic)
+  - [Contributing Shared Logic](#contributing-shared-logic)
   - [Tips on Contributing](#tips-on-contributing)
     - [Typescript Version](#typescript-version)
     - [Debugging](#debugging)
@@ -21,7 +21,6 @@ r/Singapore's community building bot.
     - [Snoowrap typings issues](#snoowrap-typings-issues)
   - [Things To Do](#things-to-do)
     - [Shared](#shared)
-      - [CommandParser](#commandparser)
       - [MongoDB Client](#mongodb-client)
     - [Features](#features)
       - [Scheduled Posts](#scheduled-posts)
@@ -237,10 +236,6 @@ Some snoowrap typings are wrong.
 These are things we need help with right now. We aren't limiting contributions to this list - if you have an idea for RSGBot, open an issue and tell us more. 
 
 #### Shared
-##### `CommandParser`
-See src/shared/CommandParser for details. Most features will expose commands to users, a shared command parser will save us all time and ensure consistency. 
-Could try a library if anyone has suggestions.
-
 ##### MongoDB Client
 So we hit the Reddit API less. Things like when a users account was created can be stored in MongoDB.
 
