@@ -1,11 +1,12 @@
 import "reflect-metadata";
-import { mocked } from "ts-jest/utils";
-import ExampleFeature from "../../../src/features/exampleFeature/ExampleFeature";
-import Logger from "../../../src/shared/logging/Logger";
 import Comment from "snoowrap/dist/objects/Comment";
+import PrivateMessage from "snoowrap/dist/objects/PrivateMessage";
 import RedditUser from "snoowrap/dist/objects/RedditUser";
 import Submission from "snoowrap/dist/objects/Submission";
-import PrivateMessage from "snoowrap/dist/objects/PrivateMessage";
+import { mocked } from "ts-jest/utils";
+import ExampleFeature from "../../../src/features/exampleFeature/ExampleFeature";
+import Command from "../../../src/shared/commands/Command";
+import Logger from "../../../src/shared/logging/Logger";
 
 jest.mock("../../../src/shared/logging/Logger");
 jest.mock("snoowrap/dist/objects/Comment");
@@ -134,6 +135,10 @@ describe('onPrivateMessage', () => {
         // Arrange
         const dummyAuthorName = 'dummyAuthorName';
         const dummyBody = 'dummyBody';
+        const dummyCommandName = 'dummyCommandName';
+        const dummyCommandOptionName = 'dummyCommandOptionName';
+        const dummyCommandOptionValue = 'dummyCommandOptionValue';
+        const dummyCommand = new Command(dummyCommandName, new Map<string, string>([[dummyCommandOptionName, dummyCommandOptionValue]]));
 
         const mockRedditUser = new RedditUser(null, null, null);
         mockRedditUser.name = dummyAuthorName;
@@ -146,11 +151,12 @@ describe('onPrivateMessage', () => {
         const testSubject = new ExampleFeature(mockLogger);
 
         // Act
-        await testSubject.onPrivateMessage(mockPrivateMessage, null);
+        await testSubject.onPrivateMessage(mockPrivateMessage, dummyCommand);
 
         // Assert
         const mockLoggerTyped = mocked(mockLogger);
-        expect(mockLoggerTyped.info.mock.calls[0][0]).toEqual(`onPrivateMessage, author: ${dummyAuthorName}, private message body: ${dummyBody}`);
+        expect(mockLoggerTyped.info.mock.calls[0][0]).toEqual(`onPrivateMessage, author: ${dummyAuthorName}, private message body: ${dummyBody},\
+ command: ${dummyCommandName}, command options: ${dummyCommandOptionName}=${dummyCommandOptionValue}`);
 
         const mockPrivateMessageTyped = mocked(mockPrivateMessage);
         expect(mockPrivateMessageTyped.reply.mock.calls[0][0]).toEqual(`echo: ${dummyBody}`);

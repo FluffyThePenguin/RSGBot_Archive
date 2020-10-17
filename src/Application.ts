@@ -132,6 +132,14 @@ export default class Application {
             }
 
             const command = commandParser.tryParse(message.body);
+
+            if (command == null) {
+                // TODO flesh this out - print valid commands
+                message.reply('Invalid command.');
+
+                continue;
+            }
+
             let numOnPrivateMessageCorePromises = 0;
 
             for (const feature of features) {
@@ -191,7 +199,7 @@ export default class Application {
                 continue;
             }
 
-            const command = commandParser.tryParse(comment.body);
+            const command = commandParser.tryParse(comment.body); // May return null
             let numOnCommentCorePromises = 0;
 
             for (const feature of features) {
