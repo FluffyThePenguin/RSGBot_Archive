@@ -40,8 +40,11 @@ export default class ExampleFeature extends Feature {
     /**
      * Logs private message, replies with a copy of its body.
      */
-    public async onPrivateMessage(privateMessage: PrivateMessage, _: Command): Promise<void> {
-        this._logger.info(`onPrivateMessage, author: ${privateMessage.author.name}, private message body: ${privateMessage.body}`);
+    public async onPrivateMessage(privateMessage: PrivateMessage, command: Command): Promise<void> {
+        const options = command.options; // Command is never null (see Application.processNewPrivateMessages)
+        const optionsAsString = options == null ? '' : Array.from(command.options).map((value) => `${value[0]}=${value[1]}`);
+        
+        this._logger.info(`onPrivateMessage, author: ${privateMessage.author.name}, private message body: ${privateMessage.body}, command: ${command.name}, command options: ${optionsAsString}`);
 
         //@ts-ignore
         await privateMessage.reply(`echo: ${privateMessage.body}`);
